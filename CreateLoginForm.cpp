@@ -12,14 +12,8 @@ CreateLoginForm::CreateLoginForm(QWidget *parent)
 void CreateLoginForm::addLoginToDBSlot() 
 {
 	//сохраняем логин в БД
-
 	StaffLogin login;
 
-	int newId;
-	newId = DataBase::getLastId(DataBase::getTableLogins());
-	++newId;
-
-	login.setId(newId);
 	login.setName(nameLineEdit->text().toStdString());
 	login.setPosition(positionLineEdit->text().toStdString());
 	login.setLogin(loginLineEdit->text().toStdString());
@@ -27,26 +21,18 @@ void CreateLoginForm::addLoginToDBSlot()
 	
 	std::vector<StaffLogin> loginsList(DataBase::getLoginsList());
 
-	if (!loginsList.empty()) 
+	for (int i = 0; i < loginsList.size(); ++i)
 	{
-		for (int i = 0; i < loginsList.size(); ++i)
+		if (login.getLogin() == loginsList[i].getLogin())
 		{
-			if (login.getLogin() == loginsList[i].getLogin()) 
-			{
-				QMessageBox::warning(this, "Ошибка", "Такой логин уже существует");
-				break;
-			}
+			QMessageBox::warning(this, "Ошибка", "Такой логин уже существует");
+			break;
+		}
 
-			if (i == (loginsList.size() - 1)) 
-			{
-				DataBase::addLogin(login);
-				close();
-			}
+		if (i == (loginsList.size() - 1))
+		{
+			DataBase::addLogin(login);
+			close();
 		}
 	}
-	else 
-	{
-		DataBase::addLogin(login);
-		close();
-	}	
 }

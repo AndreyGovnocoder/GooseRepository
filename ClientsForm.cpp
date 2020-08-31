@@ -93,14 +93,14 @@ void ClientsForm::setClients(const std::vector<Client>& clientsList)
     }
 }
 
-int ClientsForm::getCurrentId() 
+const int ClientsForm::getCurrentId() 
 {
     //получаем id выделенного в списке клиента
 
     int row;
     int id = -1;
 
-    if (clientsTableWidget->currentItem() != NULL)
+    if (clientsTableWidget->currentItem())
     {
         row = clientsTableWidget->currentItem()->row();
         id = clientsTableWidget->item(row, 0)->text().toInt();

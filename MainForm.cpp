@@ -68,21 +68,21 @@ void MainForm::setOrdersTableWidget(const std::vector<Order>& ordersList)
     {
         orderId = ordersList[i].getId();
         date = ordersList[i].getDate().toString("dd.MM.yyyy");
-        client = QString::fromStdString(ordersList[i].getClient().getName());
-        clientId = ordersList[i].getClient().getId();
+        client = QString::fromStdString(DataBase::getClient(ordersList[i].getClient()).getName());
+        clientId = ordersList[i].getClient();
         payment = QString::fromStdString(ordersList[i].getPayment());
         amount = QString::fromStdString(ordersList[i].getAmount());
-        if (ordersList[i].getManager().getId() != NULL)
-        {
-            manager = QString::fromStdString(ordersList[i].getManager().getName());
-            managerId = ordersList[i].getManager().getId();
-        }
+       // if (ordersList[i].getManager())
+      //  {
+            manager = QString::fromStdString(DataBase::getStaff(ordersList[i].getManager()).getName());
+            managerId = ordersList[i].getManager();
+       // }
 
-        if (ordersList[i].getDesigner().getId() != NULL)
-        {
-            designer = QString::fromStdString(ordersList[i].getDesigner().getName());
-            designerId = ordersList[i].getDesigner().getId();
-        }
+       // if (ordersList[i].getDesigner())
+       // {
+            designer = QString::fromStdString(DataBase::getStaff(ordersList[i].getDesigner()).getName());
+            designerId = ordersList[i].getDesigner();
+        //}
 
         availability = QString::fromStdString(ordersList[i].getAvailability());
         QTableWidgetItem* orderIdItem = new QTableWidgetItem(QString::number(orderId));
@@ -172,8 +172,8 @@ void MainForm::setPositionsTableWidget(int orderId)
 void MainForm::setClientCard(int orderId) 
 {
     //заполняем карту клиента
-    
-    Client client(DataBase::getOrder(orderId).getClient());
+    Order order(DataBase::getOrder(orderId));
+    Client client(DataBase::getClient(order.getClient()));
 
     ui.clientNameLineEdit->setText(QString::fromStdString(client.getName()));
     ui.clientPhoneLineEdit->setText(QString::fromStdString(client.getPhone()));
@@ -288,10 +288,13 @@ void MainForm::createOrderSlot()
 
     CreateOrderDialog createOrderDialog(this);
     createOrderDialog.setLogin(getLogin());
+    createOrderDialog.saveBtn->setVisible(false);
     if (createOrderDialog.exec())
     {
         setOrdersTableWidget(DataBase::getOrdersList());
         clearPositionsTableWidget();
+        clearClientCard();
+        clearChangesOrderCard();
     }
 }
 
@@ -299,6 +302,8 @@ void MainForm::printOrderSlot()
 {
     setOrdersTableWidget(DataBase::getOrdersList());
     clearPositionsTableWidget();
+    clearChangesOrderCard();
+    clearClientCard();
     //печать квитанции заказа
 
     //comming soon   
@@ -316,12 +321,13 @@ void MainForm::editOrderSlot()
         Order order = Order(DataBase::getOrder(orderId));
         CreateOrderDialog createOrderDialog(this);
         createOrderDialog.setWindowTitle("Редактирование заказа");
+        createOrderDialog.setLogin(getLogin());
         createOrderDialog.dateEdit->setDate(order.getDate());
-        if (order.getClient().getId() != 0) 
+        if (order.getClient() != 0) 
         {
             for (int i = 0; i <= createOrderDialog.clientsComboBox->count(); ++i)
             {
-                if (order.getClient().getId() == createOrderDialog.clientsComboBox->itemData(i))
+                if (order.getClient() == createOrderDialog.clientsComboBox->itemData(i))
                 {
                     createOrderDialog.clientsComboBox->setCurrentIndex(i);
                 }
@@ -344,7 +350,7 @@ void MainForm::editOrderSlot()
 
         for (int i = 0; i <= createOrderDialog.managersComboBox->count(); ++i)
         {
-            if (order.getManager().getId() == createOrderDialog.managersComboBox->itemData(i))
+            if (order.getManager() == createOrderDialog.managersComboBox->itemData(i))
             {
                 createOrderDialog.managersComboBox->setCurrentIndex(i);
             }
@@ -352,7 +358,7 @@ void MainForm::editOrderSlot()
 
         for (int i = 0; i <= createOrderDialog.designersComboBox->count(); ++i)
         {
-            if (order.getDesigner().getId() == createOrderDialog.designersComboBox->itemData(i))
+            if (order.getDesigner() == createOrderDialog.designersComboBox->itemData(i))
             {
                 createOrderDialog.designersComboBox->setCurrentIndex(i);
             }
@@ -377,6 +383,8 @@ void MainForm::editOrderSlot()
         {
             setOrdersTableWidget(DataBase::getOrdersList());
             clearPositionsTableWidget();
+            clearClientCard();
+            clearChangesOrderCard();
         }
     }
 }
@@ -421,7 +429,7 @@ void MainForm::searchOnClientSlot()
 
     for (int i = 0; i < allOrders->size(); ++i)
     {
-        QString client = QString::fromStdString((*allOrders)[i].getClient().getName());
+        QString client = QString::fromStdString(DataBase::getClient((*allOrders)[i].getClient()).getName());
         client = client.toLower();
 
         for (int k = 0; k < searchClient.size(); ++k)
@@ -437,7 +445,7 @@ void MainForm::searchOnClientSlot()
 
     for (int i = 0; i < allOrders->size(); ++i)
     {
-        QString client = QString::fromStdString((*allOrders)[i].getClient().getName());
+        QString client = QString::fromStdString(DataBase::getClient((*allOrders)[i].getClient()).getName());
         client = client.toLower();
         QStringList clientWordsList = client.split(" ");
 
@@ -484,26 +492,28 @@ void MainForm::slotCustomMenuRequested(const QPoint& pos)
     //контекстное меню
 
     int row = ui.ordersTableWidget->selectionModel()->currentIndex().row();
-    int orderId = ui.ordersTableWidget->item(row, 0)->data(Qt::UserRole).toInt();
-    Order order(DataBase::getOrder(orderId));
-    QString newAvailability;
-    if (order.getAvailability() == "готово") 
-        newAvailability = "в работе";
-    else 
-        newAvailability = "готово";    
-
-    QMenu* menu = new QMenu(this);
-    QAction* setAvailability = new QAction(newAvailability, this);
-    connect(setAvailability, SIGNAL(triggered()), this, SLOT(slotSetAvailability()));
-    menu->addAction(setAvailability);
-    menu->popup(ui.ordersTableWidget->viewport()->mapToGlobal(pos));
+    if (row != -1)
+    {
+        int orderId = ui.ordersTableWidget->item(row, 0)->data(Qt::UserRole).toInt();
+        Order order(DataBase::getOrder(orderId));
+        QString newAvailability;
+        if (order.getAvailability() == "готово")
+            newAvailability = "в работе";
+        else
+            newAvailability = "готово";
+        QMenu* menu = new QMenu(this);
+        QAction* setAvailability = new QAction(newAvailability, this);
+        connect(setAvailability, SIGNAL(triggered()), this, SLOT(slotSetAvailability()));
+        menu->addAction(setAvailability);
+        menu->popup(ui.ordersTableWidget->viewport()->mapToGlobal(pos));
+    }
 }
 
 void MainForm::slotSetAvailability() {
     //устанавливаем "готово/в работе"
 
     int row = ui.ordersTableWidget->selectionModel()->currentIndex().row();
-    if (row >= 0) 
+    if (row != -1) 
     {
         int orderId = ui.ordersTableWidget->item(row, 0)->data(Qt::UserRole).toInt();
         DataBase::setAvailabilityOrder(orderId, getLogin().getId());

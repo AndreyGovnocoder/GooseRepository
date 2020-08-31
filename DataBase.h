@@ -1,6 +1,11 @@
 #pragma once
 #ifndef DATABASE_H
 #define DATABASE_H
+
+#include <QtSql>
+#include <QFile>
+#include <QDate>
+#include <QDebug>
 #include "Client.h"
 #include "Staff.h"
 #include "StaffLogin.h"
@@ -16,39 +21,35 @@ class DataBase
 {
 private:
 
-    /*
-    bool openDataBase();
-    bool restoreDataBase();
-    void closeDataBase();
-    bool createDeviceTable();
-    */
-
 public:
     DataBase() = default;
     ~DataBase() = default;
 
-    void connectToDataBase();
-    static std::vector<Client> getClientsList();
     static int getLastId(const QString&);
+    static std::vector<Client> getClientsList();   
     static void addClient(const Client&);
-    static Client getClient(int);
+    static Client getClient(const int);
     static void editClient(const Client&);
-    static void removeClient(int);
+    static void removeClient(const int);
+    static std::vector<Staff> getStaffList();
     static void addStaff(const Staff&);
     static Staff getStaff(int);
     static void removeStaff(int);
     static void editStaff(const Staff&);
-    static void addOrder(const Order&);
-    static Order getOrder(int);
-    static void removeOrder(int);
-    static void editOrder(const Order&);
-    static QString getTableClients() { return "clients.txt"; };
-    static QString getTableStaff() { return "staff.txt"; };
-    static QString getTableOrders() { return "orders.txt"; };
-    static QString getTableOrderPositions() { return "positions.txt"; };
-    static QString getTableLogins() { return "logins"; };
-    static std::vector<Staff> getStaffList();
     static std::vector<Order> getOrdersList();
+    static void addOrder(const Order&);
+    static Order getOrder(const int);
+    static void removeOrder(const int);
+    static void editOrder(const Order&);
+    static QString getTableClients() { return "clients"; };
+    static QString getTableStaff() { return "staffs"; };
+    static QString getTableOrders() { return "orders"; };
+    static QString getTableOrderPositions() { return "positions"; };
+    static QString getTableLogins() { return "logins"; };   
+    static void addPosition(int, const OrderPosition&);
+    static void editPosition(const OrderPosition&);
+    static void removePositionById(const int);
+    static void removePositionByIdOrder(const int);
     static std::vector<OrderPosition> getOrderPositionsList(int);
     static std::vector<OrderPosition> getAllPositions();
     static void setAvailabilityOrder(int, int);

@@ -9,7 +9,7 @@ class ClientsForm : public QWidget, public Ui::ClientsForm
 	Q_OBJECT
 
 private:
-	int getCurrentId();
+	const int getCurrentId();
 
 private slots:
 	void removeClientSlot();

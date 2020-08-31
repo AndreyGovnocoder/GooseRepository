@@ -3,45 +3,43 @@
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qstring.h>
+#include <qmessagebox.h>
 
-void DataBase::connectToDataBase() 
-{
-    // подключаемся к базе данных
-}
 
 std::vector<Client> DataBase::getClientsList() 
 {
     //получаем список клиентов из БД
 
-    QFile file(DataBase::getTableClients());
     std::vector<Client> clientsList;
-    char sep = '~';
+    QSqlDatabase db;
 
-    if (file.open(QIODevice::ReadOnly))
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
     {
-        QTextStream stream(&file);
-        QString str;
-        while (!stream.atEnd())
-        {
-            Client client;
-
-            std::vector<std::string> tokens;
-            std::string s = stream.readLine().toStdString();
-            for (size_t p = 0, q = 0; p != s.npos; p = q)
-                tokens.push_back(s.substr(p + (p != 0), (q = s.find(sep, p + 1)) - p - (p != 0)));
-            client.setId(tokens[0]);
-            client.setName(tokens[1]);
-            client.setPhone(tokens[2]);
-            client.setMail(tokens[3]);
-            clientsList.push_back(client);
-        }
-
-        if (stream.status() != QTextStream::Ok)
-        {
-            //qDebug() << "Ошибка чтения файла";
-        }
-        file.close();
+        QMessageBox::warning(0, "", "no file db");
     }
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setHostName("OrderBasePrint_dataBase");
+        db.setDatabaseName("OrderBasePrint_dataBase.db");
+        if (!db.open())
+        {
+            QMessageBox::warning(0, "", "error open database");
+        }
+    }
+
+    QSqlQuery query("SELECT * FROM " + DataBase::getTableClients());
+    while (query.next())
+    {
+        Client client(
+            query.value(0).toInt(), 
+            query.value(1).toString().toStdString(), 
+            query.value(2).toString().toStdString(), 
+            query.value(3).toString().toStdString());
+        clientsList.push_back(client);
+    }
+
+    db.close();
 
     return clientsList;
 }
@@ -49,86 +47,99 @@ std::vector<Client> DataBase::getClientsList()
 void DataBase::addClient(const Client& newClient) 
 {
     //добавляем клиента в БД
+    
+    QSqlDatabase db;
 
-    QFile file(DataBase::getTableClients());
-    if (file.open(QIODevice::Append)) 
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
     {
-        QTextStream stream(&file);
-
-        stream << QString::fromStdString(std::to_string(newClient.getId()) + "~" + newClient.getName() + "~" + newClient.getPhone() + "~" + newClient.getMail() + "\r\n");
-        file.close();
-
-        if (stream.status() != QTextStream::Ok) 
+        QMessageBox::warning(0, "", "no file db");
+    }
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setHostName("OrderBasePrint_dataBase");
+        db.setDatabaseName("OrderBasePrint_dataBase.db");
+        if (!db.open())
         {
-            //qDebug() << "Ошибка записи файла";
+            QMessageBox::warning(0, "", "error open database");
         }
     }
+
+    QSqlQuery query;
+    query.prepare("INSERT INTO " + DataBase::getTableClients() + " (name, phone, mail)"
+        "VALUES (:name, :phone, :mail);");
+    query.bindValue(":name", QString::fromStdString(newClient.getName()));
+    query.bindValue(":phone", QString::fromStdString(newClient.getPhone()));
+    query.bindValue(":mail", QString::fromStdString(newClient.getMail()));  
+        
+    if (!query.exec()) QMessageBox::warning(0, "", "error add client");
+
+    db.close();
 }
 
-Client DataBase::getClient(int clientId) 
+Client DataBase::getClient(const int clientId) 
 {
     //получаем клиента по id
 
     Client client;
-    QFile file(DataBase::getTableClients());
-    char sep = '~';
 
-    if (file.open(QIODevice::ReadOnly))
+    QSqlDatabase db;
+
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
     {
-        QTextStream stream(&file);
-        QString str;
-        while (!stream.atEnd())
-        {
-            std::vector<std::string> tokens;
-            std::string s = stream.readLine().toStdString();
-            for (size_t p = 0, q = 0; p != s.npos; p = q)
-                tokens.push_back(s.substr(p + (p != 0), (q = s.find(sep, p + 1)) - p - (p != 0)));
-            if (std::stoi(tokens[0]) == clientId) 
-            {
-                client.setId(tokens[0]);
-                client.setName(tokens[1]);
-                client.setPhone(tokens[2]);
-                client.setMail(tokens[3]);
-            }
-        }
-
-        if (stream.status() != QTextStream::Ok)
-        {
-            //qDebug() << "Ошибка чтения файла";
-        }
-        file.close();
+        QMessageBox::warning(0, "", "no file db");
     }
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setHostName("OrderBasePrint_dataBase");
+        db.setDatabaseName("OrderBasePrint_dataBase.db");
+        if (!db.open())
+        {
+            QMessageBox::warning(0, "", "error open database");
+        }
+    }
+
+    QSqlQuery query("SELECT * FROM " + DataBase::getTableClients() + " WHERE _id=" + QString::number(clientId));
+    
+    while (query.next())
+    {
+        client.setId(clientId);
+        client.setName(query.value(1).toString().toStdString());
+        client.setPhone(query.value(2).toString().toStdString());
+        client.setMail(query.value(3).toString().toStdString());
+    }
+    db.close();
 
     return client;
 }
 
-void DataBase::removeClient(int id) 
+void DataBase::removeClient(const int id) 
 {
     //удаляем клиента из БД
 
-    QFile newFile("temp.txt");
-    QFile file(DataBase::getTableClients());
+    QSqlDatabase db;
 
-
-    if (newFile.open(QIODevice::WriteOnly)) 
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
     {
-        QTextStream stream(&newFile);
-
-        for (int i = 0; i < DataBase::getClientsList().size(); ++i)
-        {
-            if (DataBase::getClientsList()[i].getId() != id) 
-            {
-                stream << QString::fromStdString(std::to_string(
-                      DataBase::getClientsList()[i].getId()) + "~"
-                    + DataBase::getClientsList()[i].getName() + "~"
-                    + DataBase::getClientsList()[i].getPhone() + "~"
-                    + DataBase::getClientsList()[i].getMail() + "\r\n");
-            }
-        }
-        newFile.close();
+        QMessageBox::warning(0, "", "no file db");
     }
-    file.remove();
-    newFile.rename(DataBase::getTableClients());
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setHostName("OrderBasePrint_dataBase");
+        db.setDatabaseName("OrderBasePrint_dataBase.db");
+        if (!db.open())
+        {
+            QMessageBox::warning(0, "", "error open database");
+        }
+    }
+
+    QSqlQuery query("DELETE FROM " + DataBase::getTableClients() + " WHERE _id=" + QString::number(id));
+
+    if (!query.exec()) QMessageBox::warning(0, "", "remove client is unsuccessfully");
+
+    db.close();
 }
 
 int DataBase::getLastId(const QString& table) 
@@ -136,30 +147,31 @@ int DataBase::getLastId(const QString& table)
     // получаем последний id в таблице БД
 
     int lastId;
-    QFile file(table);
-    char sep = '~';
 
-    if (file.open(QIODevice::ReadOnly))
+    QSqlDatabase db;
+
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
     {
-        QTextStream stream(&file);
-        QString str;
-        while (!stream.atEnd())
-        {
-            std::vector<std::string> tokens;
-            std::string s = stream.readLine().toStdString();
-            for (size_t p = 0, q = 0; p != s.npos; p = q)
-                tokens.push_back(s.substr(p + (p != 0), (q = s.find(sep, p + 1)) - p - (p != 0)));
-            lastId = std::stoi(tokens[0]);
-        }
-
-        if (stream.status() != QTextStream::Ok)
-        {
-            //qDebug() << "Ошибка чтения файла";
-            lastId = 0;
-        }
-        file.close();
+        QMessageBox::warning(0, "", "no file db");
     }
-    else lastId = 0;
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setHostName("OrderBasePrint_dataBase");
+        db.setDatabaseName("OrderBasePrint_dataBase.db");
+        if (!db.open())
+        {
+            QMessageBox::warning(0, "", "error open database");
+        }
+    }
+
+    QSqlQuery query("SELECT _id FROM " + table);
+   
+    query.last();
+    lastId = query.value(0).toInt();
+    if(!query.exec()) QMessageBox::warning(0, "", "error get last id");
+
+    db.close();
 
     return lastId;
 }
@@ -168,37 +180,32 @@ void DataBase::editClient(const Client& client)
 {
     //редактируем клиента
 
-    QFile newFile("temp.txt");
-    QFile file(DataBase::getTableClients());
+    QSqlDatabase db;
 
-    if (newFile.open(QIODevice::WriteOnly)) 
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
     {
-        QTextStream stream(&newFile);
-
-        for (int i = 0; i < DataBase::getClientsList().size(); ++i)
+        QMessageBox::warning(0, "", "no file db");
+    }
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setHostName("OrderBasePrint_dataBase");
+        db.setDatabaseName("OrderBasePrint_dataBase.db");
+        if (!db.open())
         {
-            if (DataBase::getClientsList()[i].getId() != client.getId()) 
-            {
-                stream << QString::fromStdString(std::to_string(
-                    DataBase::getClientsList()[i].getId()) + "~"
-                    + DataBase::getClientsList()[i].getName() + "~"
-                    + DataBase::getClientsList()[i].getPhone() + "~"
-                    + DataBase::getClientsList()[i].getMail() + "\r\n");
-            }
-            else 
-            {
-                stream << QString::fromStdString(std::to_string(
-                    client.getId()) + "~"
-                    + client.getName() + "~"
-                    + client.getPhone() + "~"
-                    + client.getMail() + "\r\n");
-            }
+            QMessageBox::warning(0, "", "error open database");
         }
-        newFile.close();
     }
 
-    file.remove();
-    newFile.rename(DataBase::getTableClients());
+    QSqlQuery query;
+    query.prepare("UPDATE " + DataBase::getTableClients() + " SET name = ?, phone = ?, mail = ?  WHERE _id=" + QString::number(client.getId()));
+    query.addBindValue(QString::fromStdString(client.getName()));
+    query.addBindValue(QString::fromStdString(client.getPhone()));
+    query.addBindValue(QString::fromStdString(client.getMail()));
+
+    if (!query.exec()) QMessageBox::warning(0, "", "edit client is unsuccessfully");
+
+    db.close();
 }
 
 std::vector<Staff> DataBase::getStaffList() 
@@ -206,33 +213,35 @@ std::vector<Staff> DataBase::getStaffList()
     //получаем список сотрудников из БД
 
     std::vector<Staff> staffList;
-    QFile file(DataBase::getTableStaff());
-    char sep = '~';
+    QSqlDatabase db;
 
-    if (file.open(QIODevice::ReadOnly))
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
     {
-        QTextStream stream(&file);
-        QString str;
-        while (!stream.atEnd())
-        {
-            Staff staff;
-
-            std::vector<std::string> tokens;
-            std::string s = stream.readLine().toStdString();
-            for (size_t p = 0, q = 0; p != s.npos; p = q)
-                tokens.push_back(s.substr(p + (p != 0), (q = s.find(sep, p + 1)) - p - (p != 0)));
-            staff.setId(tokens[0]);
-            staff.setPosition(tokens[1]);
-            staff.setName(tokens[2]);
-            staffList.push_back(staff);
-        }
-
-        if (stream.status() != QTextStream::Ok)
-        {
-            //qDebug() << "Ошибка чтения файла";
-        }
-        file.close();
+        QMessageBox::warning(0, "", "no file db");
     }
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setHostName("OrderBasePrint_dataBase");
+        db.setDatabaseName("OrderBasePrint_dataBase.db");
+        if (!db.open())
+        {
+            QMessageBox::warning(0, "", "error open database");
+        }
+    }
+
+    QSqlQuery query("SELECT * FROM " + DataBase::getTableStaff());
+    while (query.next())
+    {
+        Staff staff(
+            query.value(0).toInt(),
+            query.value(1).toString().toStdString(),
+            query.value(2).toString().toStdString());
+        staffList.push_back(staff);
+    }
+
+    db.close();
+
     return staffList;
 }
 
@@ -240,58 +249,67 @@ void DataBase::addStaff(const Staff& newStaff)
 {
     //добавляем сотрудника в БД
 
-    QFile file(DataBase::getTableStaff());
-    if (file.open(QIODevice::Append)) 
+    QSqlDatabase db;
+
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
     {
-        QTextStream stream(&file);
-
-        stream << QString::fromStdString(
-            std::to_string(newStaff.getId()) + "~" + 
-            newStaff.getPosition() + "~" + 
-            newStaff.getName() + 
-            "\r\n");
-        file.close();
-
-        if (stream.status() != QTextStream::Ok) 
+        QMessageBox::warning(0, "", "no file db");
+    }
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setHostName("OrderBasePrint_dataBase");
+        db.setDatabaseName("OrderBasePrint_dataBase.db");
+        if (!db.open())
         {
-            //qDebug() << "Ошибка записи файла";
+            QMessageBox::warning(0, "", "error open database");
         }
     }
+
+    QSqlQuery query;
+    query.prepare("INSERT INTO " + DataBase::getTableStaff() + " (name, position)"
+        "VALUES (:name, :position);");
+    query.bindValue(":name", QString::fromStdString(newStaff.getName()));
+    query.bindValue(":position", QString::fromStdString(newStaff.getPosition()));
+
+    if (!query.exec()) QMessageBox::warning(0, "", "error add staff");
+
+    db.close();
 }
 
 Staff DataBase::getStaff(int staffId) 
 {
     //получаем сотрудника по id
+
     Staff staff;
-    QFile file(DataBase::getTableStaff());
-    char sep = '~';
 
-    if (file.open(QIODevice::ReadOnly))
+    QSqlDatabase db;
+
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
     {
-        QTextStream stream(&file);
-        QString str;
-        while (!stream.atEnd())
-        {
-            std::vector<std::string> tokens;
-            std::string s = stream.readLine().toStdString();
-            for (size_t p = 0, q = 0; p != s.npos; p = q)
-                tokens.push_back(s.substr(p + (p != 0), (q = s.find(sep, p + 1)) - p - (p != 0)));
-
-            if (std::stoi(tokens[0]) == staffId) 
-            {
-                staff.setId(tokens[0]);
-                staff.setPosition(tokens[1]);
-                staff.setName(tokens[2]);
-            }
-
-        }
-
-        if (stream.status() != QTextStream::Ok)
-        {
-            //qDebug() << "Ошибка чтения файла";
-        }
-        file.close();
+        QMessageBox::warning(0, "", "no file db");
     }
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setHostName("OrderBasePrint_dataBase");
+        db.setDatabaseName("OrderBasePrint_dataBase.db");
+        if (!db.open())
+        {
+            QMessageBox::warning(0, "", "error open database");
+        }
+    }
+
+    QSqlQuery query("SELECT * FROM " + DataBase::getTableStaff() + " WHERE _id=" + QString::number(staffId));
+
+    while (query.next())
+    {
+        staff.setId(staffId);
+        staff.setName(query.value(1).toString().toStdString());
+        staff.setPosition(query.value(2).toString().toStdString());
+    }
+
+    db.close();
 
     return staff;
 }
@@ -300,184 +318,160 @@ void DataBase::removeStaff(int staffId)
 {
     //удаляем сотрудника из БД
 
-    QFile newFile("temp.txt");
-    QFile file(DataBase::getTableStaff());
+    QSqlDatabase db;
 
-    if (newFile.open(QIODevice::WriteOnly)) 
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
     {
-        QTextStream stream(&newFile);
-
-        for (int i = 0; i < DataBase::getStaffList().size(); ++i)
-        {
-            if (DataBase::getStaffList()[i].getId() != staffId) 
-            {
-                stream << QString::fromStdString(
-                    std::to_string(DataBase::getStaffList()[i].getId()) + "~" + 
-                    DataBase::getStaffList()[i].getPosition() + "~" + 
-                    DataBase::getStaffList()[i].getName() + 
-                    "\r\n");
-            }
-        }
-        newFile.close();
+        QMessageBox::warning(0, "", "no file db");
     }
-    file.remove();
-    newFile.rename(DataBase::getTableStaff());
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setHostName("OrderBasePrint_dataBase");
+        db.setDatabaseName("OrderBasePrint_dataBase.db");
+        if (!db.open())
+        {
+            QMessageBox::warning(0, "", "error open database");
+        }
+    }
+
+    QSqlQuery query("DELETE FROM " + DataBase::getTableStaff() + " WHERE _id=" + QString::number(staffId));
+
+    if (!query.exec()) QMessageBox::warning(0, "", "remove staff is unsuccessfully");
+
+    db.close();
 }
 
 void DataBase::editStaff(const Staff& editStaff) 
 {
     //редактируем сотрудника
 
-    QFile newFile("temp.txt");
-    QFile file(DataBase::getTableStaff());
-    if (newFile.open(QIODevice::WriteOnly)) 
-    {
-        QTextStream stream(&newFile);
+    QSqlDatabase db;
 
-        for (int i = 0; i < DataBase::getStaffList().size(); ++i)
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
+    {
+        QMessageBox::warning(0, "", "no file db");
+    }
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setHostName("OrderBasePrint_dataBase");
+        db.setDatabaseName("OrderBasePrint_dataBase.db");
+        if (!db.open())
         {
-            if (DataBase::getStaffList()[i].getId() != editStaff.getId()) 
-            {
-                stream << QString::fromStdString(std::to_string(
-                    DataBase::getStaffList()[i].getId()) + "~" + 
-                    DataBase::getStaffList()[i].getPosition() + "~" + 
-                    DataBase::getStaffList()[i].getName() + 
-                    "\r\n");
-            }
-            else 
-            {
-                stream << QString::fromStdString(std::to_string(
-                    editStaff.getId()) + "~" + 
-                    editStaff.getPosition() + "~" + 
-                    editStaff.getName() + 
-                    "\r\n");
-            }
+            QMessageBox::warning(0, "", "error open database");
         }
-        newFile.close();
     }
 
-    file.remove();
-    newFile.rename(DataBase::getTableStaff());
+    QSqlQuery query;
+    query.prepare("UPDATE " + DataBase::getTableStaff() + " SET name = ?, position = ?  WHERE _id=" + QString::number(editStaff.getId()));
+    query.addBindValue(QString::fromStdString(editStaff.getName()));
+    query.addBindValue(QString::fromStdString(editStaff.getPosition()));
+
+    if (!query.exec()) QMessageBox::warning(0, "", "edit staff is unsuccessfully");
+
+    db.close();
 }
 
 void DataBase::addOrder(const Order& order) 
 {
     //добавляем заказ в БД
-    QFile file(DataBase::getTableOrders());
-    if (file.open(QIODevice::Append)) 
+
+    QSqlDatabase db;
+
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
     {
-        QTextStream stream(&file);
-
-        stream << QString::fromStdString(
-            std::to_string(order.getId()) + "~" +
-            order.getDate().toString("dd.MM.yyyy").toStdString() + "~" +
-            std::to_string(order.getClient().getId()) + "~" +
-            order.getAmount() + "~" +
-            order.getPayment() + "~" +
-            std::to_string(order.getManager().getId()) + "~" +
-            std::to_string(order.getDesigner().getId()) + "~" +
-            order.getAvailability() + "~" +
-            order.getRemark() + "~" +
-            std::to_string(order.getLoginCreate()) + "~" +
-            std::to_string(order.getLoginEdit()) + "~" +
-            std::to_string(order.getLoginAvailability()) + "~" +
-            order.getDateTimeCreate().toString("dd.MM.yyyy hh:mm").toStdString() + "~" +
-            order.getDateTimeEdit().toString("dd.MM.yyyy hh:mm").toStdString() + "~" +
-            order.getDateTimeAvailability().toString("dd.MM.yyyy hh:mm").toStdString() + "~" +
-            "\r\n");
-        file.close();
-
-        if (stream.status() != QTextStream::Ok) 
+        QMessageBox::warning(0, "", "no file db");
+    }
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setHostName("OrderBasePrint_dataBase");
+        db.setDatabaseName("OrderBasePrint_dataBase.db");
+        if (!db.open())
         {
-            //qDebug() << "Ошибка записи файла";
+            QMessageBox::warning(0, "", "error open database");
         }
     }
 
-    QFile filePositions(DataBase::getTableOrderPositions());
-    if (filePositions.open(QIODevice::Append)) 
+    QSqlQuery query;
+    query.prepare("INSERT INTO " + DataBase::getTableOrders() + 
+        " (date, client, amount, payment, manager, designer, availability, remark, loginCreate, loginEdit, loginAvailability, dateTimeCreate, dateTimeEdit, dateTimeAvailability)"
+        " VALUES (:date, :client, :amount, :payment, :manager, :designer, :availability, :remark, :loginCreate, :loginEdit, :loginAvailability, :dateTimeCreate, :dateTimeEdit, :dateTimeAvailability);");
+    query.bindValue(":date", order.getDate().toString("dd.MM.yyyy"));
+    query.bindValue(":client", order.getClient());
+    query.bindValue(":amount", QString::fromStdString(order.getAmount()));
+    query.bindValue(":payment", QString::fromStdString(order.getPayment()));
+    query.bindValue(":manager", order.getManager());
+    query.bindValue(":designer", order.getDesigner());
+    query.bindValue(":availability", QString::fromStdString(order.getAvailability()));
+    query.bindValue(":remark", QString::fromStdString(order.getRemark()));
+    query.bindValue(":loginCreate", order.getLoginCreate());
+    query.bindValue(":loginEdit", order.getLoginEdit());
+    query.bindValue(":loginAvailability", order.getLoginAvailability());
+    query.bindValue(":dateTimeCreate", order.getDateTimeCreate().toString("dd.MM.yyyy hh:mm"));
+    query.bindValue(":dateTimeEdit", order.getDateTimeEdit().toString("dd.MM.yyyy hh:mm"));
+    query.bindValue(":dateTimeAvailability", order.getDateTimeAvailability().toString("dd.MM.yyyy hh:mm"));
+
+    if (!query.exec()) QMessageBox::warning(0, "", "error add order");
+
+    db.close();
+
+    for (int i = 0; i < order.getPositionsList().size(); ++i)
     {
-        QTextStream stream(&filePositions);
-
-        for (int i = 0; i < order.getPositionsList().size(); ++i)
-        {
-            stream << QString::fromStdString(
-                std::to_string(order.getPositionsList()[i].getIdPosition()) + "~" +
-                std::to_string(order.getPositionsList()[i].getIdOrder()) + "~" +
-                order.getPositionsList()[i].getDescription() + "~" +
-                order.getPositionsList()[i].getIssue() + "~" +
-                order.getPositionsList()[i].getQuantity() + "~" +
-                "\r\n");
-        }
-
-        filePositions.close();
-
-        if (stream.status() != QTextStream::Ok) {
-            //qDebug() << "Ошибка записи файла";
-        }
-    }
+        DataBase::addPosition(DataBase::getLastId(DataBase::getTableOrders()), order.getPositionsList()[i]);
+    }    
 }
 
-Order DataBase::getOrder(int orderId) 
+Order DataBase::getOrder(const int orderId) 
 {
     //получаем заказ из БД по id
 
     Order order;
 
-    QFile file(DataBase::getTableOrders());
-    char sep = '~';
+    QSqlDatabase db;
 
-    if (file.open(QIODevice::ReadOnly))
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
     {
-        QTextStream stream(&file);
-        QString str;
-        while (!stream.atEnd())
-        {
-            std::vector<std::string> tokens;
-            std::string s = stream.readLine().toStdString();
-            for (size_t p = 0, q = 0; p != s.npos; p = q)
-                tokens.push_back(s.substr(p + (p != 0), (q = s.find(sep, p + 1)) - p - (p != 0)));
-
-            if (std::stoi(tokens[0]) == orderId) 
-            {
-                order.setId(std::stoi(tokens[0]));
-                QDate date = QDate::fromString(QString::fromStdString(tokens[1]), "dd.MM.yyyy");
-                order.setDate(date);
-                if (std::stoi(tokens[2]) != 0) 
-                {
-                    order.setClient(DataBase::getClient(std::stoi(tokens[2])));
-                }
-                else order.setClient(Client(0, "", "", ""));
-                order.setAmount(tokens[3]);
-                order.setPayment(tokens[4]);
-                if (std::stoi(tokens[5]) != 0) 
-                {
-                    order.setManager(DataBase::getStaff(std::stoi(tokens[5])));
-                }
-                else order.setManager(Staff(0));
-                if (std::stoi(tokens[6]) != 0) {
-                    order.setDesigner(DataBase::getStaff(std::stoi(tokens[6])));
-                }
-                else order.setDesigner(Staff(0));
-                order.setAvailability(tokens[7]);
-                order.setRemark(tokens[8]);
-                order.setLoginCreate(std::stoi(tokens[9]));
-                order.setLoginEdit(std::stoi(tokens[10]));
-                order.setLoginAvailability(std::stoi(tokens[11]));
-                QDateTime dateTime = QDateTime::fromString(QString::fromStdString(tokens[12]), "dd.MM.yyyy hh:mm");
-                order.setDateTimeCreate(dateTime);
-                dateTime = QDateTime::fromString(QString::fromStdString(tokens[13]), "dd.MM.yyyy hh:mm");
-                order.setDateTimeEdit(dateTime);
-                dateTime = QDateTime::fromString(QString::fromStdString(tokens[14]), "dd.MM.yyyy hh:mm");
-                order.setDateTimeAvailability(dateTime);
-            }
-        }
-
-        if (stream.status() != QTextStream::Ok)
-        {
-            //qDebug() << "Ошибка чтения файла";
-        }
-        file.close();
+        QMessageBox::warning(0, "", "no file db");
     }
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setHostName("OrderBasePrint_dataBase");
+        db.setDatabaseName("OrderBasePrint_dataBase.db");
+        if (!db.open())
+        {
+            QMessageBox::warning(0, "", "error open database");
+        }
+    }
+
+    QSqlQuery query("SELECT * FROM " + DataBase::getTableOrders() + " WHERE _id=" + QString::number(orderId));
+
+    while (query.next())
+    {
+        order.setId(query.value(0).toInt());
+        QDate date = QDate::fromString(query.value(1).toString(), "dd.MM.yyyy");
+        order.setDate(date);
+        order.setClient(query.value(2).toInt());
+        order.setAmount(query.value(3).toString().toStdString());
+        order.setPayment(query.value(4).toString().toStdString());
+        order.setManager(query.value(5).toInt());
+        order.setDesigner(query.value(6).toInt());
+        order.setAvailability(query.value(7).toString().toStdString());
+        order.setRemark(query.value(8).toString().toStdString());
+        order.setLoginCreate(query.value(9).toInt());
+        order.setLoginEdit(query.value(10).toInt());
+        order.setLoginAvailability(query.value(11).toInt());
+        QDateTime dateTime = QDateTime::fromString(query.value(12).toString(), "dd.MM.yyyy hh:mm");
+        order.setDateTimeCreate(dateTime);
+        dateTime = QDateTime::fromString(query.value(13).toString(), "dd.MM.yyyy hh:mm");
+        order.setDateTimeEdit(dateTime);
+        dateTime = QDateTime::fromString(query.value(14).toString(), "dd.MM.yyyy hh:mm");
+        order.setDateTimeAvailability(dateTime);
+    }
+
+    db.close();
 
     order.setPositionsList(DataBase::getOrderPositionsList(order.getId()));
 
@@ -489,52 +483,170 @@ std::vector<Order> DataBase::getOrdersList()
     //получаем список заказов
 
     std::vector<Order> ordersList;
-    QFile file(DataBase::getTableOrders());
-    char sep = '~';
 
-    if (file.open(QIODevice::ReadOnly))
+    QSqlDatabase db;
+
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
     {
-        QTextStream stream(&file);
-        QString str;
-        while (!stream.atEnd())
+        QMessageBox::warning(0, "", "no file db");
+    }
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setHostName("OrderBasePrint_dataBase");
+        db.setDatabaseName("OrderBasePrint_dataBase.db");
+        if (!db.open())
         {
-            Order order;
-
-            std::vector<std::string> tokens;
-            std::string s = stream.readLine().toStdString();
-            for (size_t p = 0, q = 0; p != s.npos; p = q)
-                tokens.push_back(s.substr(p + (p != 0), (q = s.find(sep, p + 1)) - p - (p != 0)));
-            order.setId(std::stoi(tokens[0]));
-            QDate date = QDate::fromString(QString::fromStdString(tokens[1]), "dd.MM.yyyy");
-            order.setDate(date);
-            order.setClient(DataBase::getClient(std::stoi(tokens[2])));
-            order.setAmount(tokens[3]);
-            order.setPayment(tokens[4]);
-            order.setManager(DataBase::getStaff(std::stoi(tokens[5])));
-            order.setDesigner(DataBase::getStaff(std::stoi(tokens[6])));
-            order.setAvailability(tokens[7]);
-            order.setRemark(tokens[8]);
-            order.setLoginCreate(std::stoi(tokens[9]));
-            order.setLoginEdit(std::stoi(tokens[10]));
-            order.setLoginAvailability(std::stoi(tokens[11]));
-            QDateTime dateTime = QDateTime::fromString(QString::fromStdString(tokens[12]), "dd.MM.yyyy hh:mm");
-            order.setDateTimeCreate(dateTime);
-            dateTime = QDateTime::fromString(QString::fromStdString(tokens[13]), "dd.MM.yyyy hh:mm");
-            order.setDateTimeEdit(dateTime);
-            dateTime = QDateTime::fromString(QString::fromStdString(tokens[14]), "dd.MM.yyyy hh:mm");
-            order.setDateTimeAvailability(dateTime);
-
-            ordersList.push_back(order);
+            QMessageBox::warning(0, "", "error open database");
         }
-
-        if (stream.status() != QTextStream::Ok)
-        {
-            //qDebug() << "Ошибка чтения файла";
-        }
-        file.close();
     }
 
+    QSqlQuery query("SELECT * FROM " + DataBase::getTableOrders());
+    while (query.next())
+    {
+        Order order;
+        order.setId(query.value(0).toInt());
+        QDate date = QDate::fromString(query.value(1).toString(), "dd.MM.yyyy");
+        order.setDate(date);
+        order.setClient(query.value(2).toInt());
+        order.setAmount(query.value(3).toString().toStdString());
+        order.setPayment(query.value(4).toString().toStdString());
+        order.setManager(query.value(5).toInt());
+        order.setDesigner(query.value(6).toInt());
+        order.setAvailability(query.value(7).toString().toStdString());
+        order.setRemark(query.value(8).toString().toStdString());
+        order.setLoginCreate(query.value(9).toInt());
+        order.setLoginEdit(query.value(10).toInt());
+        order.setLoginAvailability(query.value(11).toInt());
+        QDateTime dateTime = QDateTime::fromString(query.value(12).toString(), "dd.MM.yyyy hh:mm");
+        order.setDateTimeCreate(dateTime);
+        dateTime = QDateTime::fromString(query.value(13).toString(), "dd.MM.yyyy hh:mm");
+        order.setDateTimeEdit(dateTime);
+        dateTime = QDateTime::fromString(query.value(14).toString(), "dd.MM.yyyy hh:mm");
+        order.setDateTimeAvailability(dateTime);
+
+        ordersList.push_back(order);
+    }
+
+    db.close();
+
     return ordersList;
+}
+
+void DataBase::addPosition(int orderId, const OrderPosition& position)
+{
+    QSqlDatabase db;
+
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
+    {
+        QMessageBox::warning(0, "", "no file db");
+    }
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setHostName("OrderBasePrint_dataBase");
+        db.setDatabaseName("OrderBasePrint_dataBase.db");
+        if (!db.open())
+        {
+            QMessageBox::warning(0, "", "error open database");
+        }
+    }
+
+    QSqlQuery query;
+    query.prepare("INSERT INTO " + DataBase::getTableOrderPositions() + " (idOrder, description, quantity, issue)"
+        " VALUES (:idOrder, :description, :quantity, :issue);");
+
+    query.bindValue(":idOrder", orderId);
+    query.bindValue(":description", QString::fromStdString(position.getDescription()));
+    query.bindValue(":quantity", QString::fromStdString(position.getQuantity()));
+    query.bindValue(":issue", QString::fromStdString(position.getIssue()));
+    if (!query.exec()) QMessageBox::warning(0, "", "error add position");
+
+    db.close();
+}
+
+void DataBase::editPosition(const OrderPosition& editPosition) 
+{
+    QSqlDatabase db;
+
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
+    {
+        QMessageBox::warning(0, "", "no file db");
+    }
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setHostName("OrderBasePrint_dataBase");
+        db.setDatabaseName("OrderBasePrint_dataBase.db");
+        if (!db.open())
+        {
+            QMessageBox::warning(0, "", "error open database");
+        }
+    }
+
+    QSqlQuery query;
+    query.prepare("UPDATE " + DataBase::getTableOrderPositions() +
+        " SET description=?, quantity=?, issue=?"
+        "  WHERE _id=" + QString::number(editPosition.getIdPosition()));
+    query.addBindValue(QString::fromStdString(editPosition.getDescription()));
+    query.addBindValue(QString::fromStdString(editPosition.getQuantity()));
+    query.addBindValue(QString::fromStdString(editPosition.getIssue()));
+
+    if (!query.exec()) QMessageBox::warning(0, "", "error add position");
+
+    db.close();
+}
+
+void DataBase::removePositionById(const int idPosition)
+{
+    QSqlDatabase db;
+
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
+    {
+        QMessageBox::warning(0, "", "no file db");
+    }
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setHostName("OrderBasePrint_dataBase");
+        db.setDatabaseName("OrderBasePrint_dataBase.db");
+        if (!db.open())
+        {
+            QMessageBox::warning(0, "", "error open database");
+        }
+    }
+
+    QSqlQuery query("DELETE FROM " + DataBase::getTableOrderPositions() + " WHERE _id=" + QString::number(idPosition));
+
+    if (!query.exec()) QMessageBox::warning(0, "", "remove position is unsuccessfully");
+
+    db.close();
+}
+
+void DataBase::removePositionByIdOrder(const int idOrder)
+{
+    QSqlDatabase db;
+
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
+    {
+        QMessageBox::warning(0, "", "no file db");
+    }
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setHostName("OrderBasePrint_dataBase");
+        db.setDatabaseName("OrderBasePrint_dataBase.db");
+        if (!db.open())
+        {
+            QMessageBox::warning(0, "", "error open database");
+        }
+    }
+
+    QSqlQuery query("DELETE FROM " + DataBase::getTableOrderPositions() + " WHERE idOrder=" + QString::number(idOrder));
+
+    if (!query.exec()) QMessageBox::warning(0, "", "remove position is unsuccessfully");
+
+    db.close();
 }
 
 std::vector<OrderPosition> DataBase::getOrderPositionsList(int orderId) 
@@ -542,39 +654,35 @@ std::vector<OrderPosition> DataBase::getOrderPositionsList(int orderId)
     //получаем список позиций по id заказа
 
     std::vector<OrderPosition> positionsList;
-    QFile file(DataBase::getTableOrderPositions());
-    char sep = '~';
 
-    if (file.open(QIODevice::ReadOnly))
+    QSqlDatabase db;
+
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
     {
-        QTextStream stream(&file);
-        QString str;
-        while (!stream.atEnd())
+        QMessageBox::warning(0, "", "no file db");
+    }
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setHostName("OrderBasePrint_dataBase");
+        db.setDatabaseName("OrderBasePrint_dataBase.db");
+        if (!db.open())
         {
-            OrderPosition position;
-
-            std::vector<std::string> tokens;
-            std::string s = stream.readLine().toStdString();
-            for (size_t p = 0, q = 0; p != s.npos; p = q)
-                tokens.push_back(s.substr(p + (p != 0), (q = s.find(sep, p + 1)) - p - (p != 0)));
-
-            if (orderId == std::stoi(tokens[1])) 
-            {
-                position.setIdOrder(std::stoi(tokens[1]));
-                position.setIdPosition(std::stoi(tokens[0]));
-                position.setDescription(tokens[2]);
-                position.setIssue(tokens[3]);
-                position.setQuantity(tokens[4]);
-
-                positionsList.push_back(position);
-            }
+            QMessageBox::warning(0, "", "error open database");
         }
+    }
 
-        if (stream.status() != QTextStream::Ok)
-        {
-            //qDebug() << "Ошибка чтения файла";
-        }
-        file.close();
+    QSqlQuery query("SELECT * FROM " + DataBase::getTableOrderPositions() + " WHERE idOrder=" + QString::number(orderId));
+    while (query.next())
+    {
+        OrderPosition position;
+        position.setIdPosition(query.value(0).toInt());
+        position.setIdOrder(query.value(1).toInt());
+        position.setDescription(query.value(2).toString().toStdString());
+        position.setQuantity(query.value(3).toString().toStdString());
+        position.setIssue(query.value(4).toString().toStdString());
+
+        positionsList.push_back(position);
     }
 
     return positionsList;
@@ -585,225 +693,123 @@ std::vector<OrderPosition> DataBase::getAllPositions()
     //получаем список позиций всех заказов
 
     std::vector<OrderPosition> positionsList;
-    QFile file(DataBase::getTableOrderPositions());
-    char sep = '~';
 
-    if (file.open(QIODevice::ReadOnly))
+    QSqlDatabase db;
+
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
     {
-        QTextStream stream(&file);
-        QString str;
-        while (!stream.atEnd())
-        {
-            OrderPosition position;
-
-            std::vector<std::string> tokens;
-            std::string s = stream.readLine().toStdString();
-            for (size_t p = 0, q = 0; p != s.npos; p = q)
-                tokens.push_back(s.substr(p + (p != 0), (q = s.find(sep, p + 1)) - p - (p != 0)));
-
-            position.setIdPosition(std::stoi(tokens[0]));
-            position.setIdOrder(std::stoi(tokens[1]));
-            position.setDescription(tokens[2]);
-            position.setIssue(tokens[3]);
-            position.setQuantity(tokens[4]);
-
-            positionsList.push_back(position);
-        }
-
-        if (stream.status() != QTextStream::Ok)
-        {
-            //qDebug() << "Ошибка чтения файла";
-        }
-        file.close();
+        QMessageBox::warning(0, "", "no file db");
     }
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setHostName("OrderBasePrint_dataBase");
+        db.setDatabaseName("OrderBasePrint_dataBase.db");
+        if (!db.open())
+        {
+            QMessageBox::warning(0, "", "error open database");
+        }
+    }
+
+    QSqlQuery query("SELECT * FROM " + DataBase::getTableOrderPositions());
+    while (query.next())
+    {
+        OrderPosition position; 
+        position.setIdPosition(query.value(0).toInt());
+        position.setIdOrder(query.value(1).toInt());
+        position.setDescription(query.value(2).toString().toStdString());
+        position.setQuantity(query.value(3).toString().toStdString());
+        position.setIssue(query.value(4).toString().toStdString());
+            
+        positionsList.push_back(position);
+    }
+
+    db.close();
 
     return positionsList;
 }
 
-void DataBase::removeOrder(int orderId) 
+void DataBase::removeOrder(const int orderId) 
 {
     //удаляем Заказ из БД
 
-    QFile newFile("temp.txt");
-    QFile file(DataBase::getTableOrders());
+    QSqlDatabase db;
 
-    if (newFile.open(QIODevice::WriteOnly)) 
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
     {
-        QTextStream stream(&newFile);
-        std::vector<Order>* ordersList = new std::vector<Order>(DataBase::getOrdersList());
-
-        for (int i = 0; i < ordersList->size(); ++i)
-        {
-            if ((*ordersList)[i].getId() != orderId) 
-            {
-                stream << QString::fromStdString(
-                    std::to_string((*ordersList)[i].getId()) + "~" +
-                    (*ordersList)[i].getDate().toString("dd.MM.yyyy").toStdString() + "~" +
-                    std::to_string((*ordersList)[i].getClient().getId()) + "~" +
-                    (*ordersList)[i].getAmount() + "~" +
-                    (*ordersList)[i].getPayment() + "~" +
-                    std::to_string((*ordersList)[i].getManager().getId()) + "~" +
-                    std::to_string((*ordersList)[i].getDesigner().getId()) + "~" +
-                    (*ordersList)[i].getAvailability() + "~" +
-                    (*ordersList)[i].getRemark() + "~" +
-                    std::to_string((*ordersList)[i].getLoginCreate()) + "~" +
-                    std::to_string((*ordersList)[i].getLoginEdit()) + "~" +
-                    std::to_string((*ordersList)[i].getLoginAvailability()) + "~" +
-                    (*ordersList)[i].getDateTimeCreate().toString("dd.MM.yyyy hh:mm").toStdString() + "~" +
-                    (*ordersList)[i].getDateTimeEdit().toString("dd.MM.yyyy hh:mm").toStdString() + "~" +
-                    (*ordersList)[i].getDateTimeAvailability().toString("dd.MM.yyyy hh:mm").toStdString() + "~" +
-                    "\r\n");
-                file.close();
-
-                if (stream.status() != QTextStream::Ok) 
-                {
-                    //qDebug() << "Ошибка записи файла";
-                }
-            }
-        }
-        newFile.close();
-        delete ordersList;
+        QMessageBox::warning(0, "", "no file db");
     }
-    file.remove();
-    newFile.rename(DataBase::getTableOrders());
-
-    QFile newFilePositions("temp2.txt");
-    QFile filePositions(DataBase::getTableOrderPositions());
-
-    if (newFilePositions.open(QIODevice::WriteOnly)) 
+    else
     {
-        QTextStream stream(&newFilePositions);
-        std::vector<OrderPosition>* orderPositionsList = new std::vector<OrderPosition>(DataBase::getAllPositions());
-
-        for (int i = 0; i < orderPositionsList->size(); ++i)
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setHostName("OrderBasePrint_dataBase");
+        db.setDatabaseName("OrderBasePrint_dataBase.db");
+        if (!db.open())
         {
-            if ((*orderPositionsList)[i].getIdOrder() != orderId) 
-            {
-                stream << QString::fromStdString(
-                    std::to_string((*orderPositionsList)[i].getIdPosition()) + "~" +
-                    std::to_string((*orderPositionsList)[i].getIdOrder()) + "~" +
-                    (*orderPositionsList)[i].getDescription() + "~" +
-                    (*orderPositionsList)[i].getIssue() + "~" +
-                    (*orderPositionsList)[i].getQuantity() + "~" +
-                    "\r\n");
-            }
+            QMessageBox::warning(0, "", "error open database");
         }
-        newFilePositions.close();
-        delete orderPositionsList;
     }
-    filePositions.remove();
-    newFilePositions.rename(DataBase::getTableOrderPositions());
+
+    QSqlQuery query("DELETE FROM " + DataBase::getTableOrders() + " WHERE _id=" + QString::number(orderId));
+
+    if (!query.exec()) QMessageBox::warning(0, "", "remove order is unsuccessfully");
+
+    db.close();
+
+    DataBase::removePositionByIdOrder(orderId);
+
 }
 
 void DataBase::editOrder(const Order& editOrder) 
 {
     //редактируем заказ
 
-    QFile newFile("temp.txt");
-    QFile file(DataBase::getTableOrders());
+    QSqlDatabase db;
 
-    std::vector<Order>* ordersList = new std::vector<Order>(DataBase::getOrdersList());
-
-    if (newFile.open(QIODevice::WriteOnly)) 
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
     {
-        QTextStream stream(&newFile);
-
-        for (int i = 0; i < ordersList->size(); ++i)
-        {
-            if ((*ordersList)[i].getId() != editOrder.getId()) 
-            {
-                stream << QString::fromStdString(
-                    std::to_string((*ordersList)[i].getId()) + "~" +
-                    (*ordersList)[i].getDate().toString("dd.MM.yyyy").toStdString() + "~" +
-                    std::to_string((*ordersList)[i].getClient().getId()) + "~" +
-                    (*ordersList)[i].getAmount() + "~" +
-                    (*ordersList)[i].getPayment() + "~" +
-                    std::to_string((*ordersList)[i].getManager().getId()) + "~" +
-                    std::to_string((*ordersList)[i].getDesigner().getId()) + "~" +
-                    (*ordersList)[i].getAvailability() + "~" +
-                    (*ordersList)[i].getRemark() + "~" +
-                    std::to_string((*ordersList)[i].getLoginCreate()) + "~" +
-                    std::to_string((*ordersList)[i].getLoginEdit()) + "~" +
-                    std::to_string((*ordersList)[i].getLoginAvailability()) + "~" +
-                    (*ordersList)[i].getDateTimeCreate().toString("dd.MM.yyyy hh:mm").toStdString() + "~" +
-                    (*ordersList)[i].getDateTimeEdit().toString("dd.MM.yyyy hh:mm").toStdString() + "~" +
-                    (*ordersList)[i].getDateTimeAvailability().toString("dd.MM.yyyy hh:mm").toStdString() + "~" +
-                    "\r\n");
-            }
-            else 
-            {
-                stream << QString::fromStdString(
-                    std::to_string(editOrder.getId()) + "~" +
-                    editOrder.getDate().toString("dd.MM.yyyy").toStdString() + "~" +
-                    std::to_string(editOrder.getClient().getId()) + "~" +
-                    editOrder.getAmount() + "~" +
-                    editOrder.getPayment() + "~" +
-                    std::to_string(editOrder.getManager().getId()) + "~" +
-                    std::to_string(editOrder.getDesigner().getId()) + "~" +
-                    editOrder.getAvailability() + "~" +
-                    editOrder.getRemark() + "~" +
-                    std::to_string(editOrder.getLoginCreate()) + "~" +
-                    std::to_string(editOrder.getLoginEdit()) + "~" +
-                    std::to_string(editOrder.getLoginAvailability()) + "~" +
-                    editOrder.getDateTimeCreate().toString("dd.MM.yyyy hh:mm").toStdString() + "~" +
-                    editOrder.getDateTimeEdit().toString("dd.MM.yyyy hh:mm").toStdString() + "~" +
-                    editOrder.getDateTimeAvailability().toString("dd.MM.yyyy hh:mm").toStdString() + "~" +
-                    "\r\n");
-            }
-        }
-        newFile.close();
+        QMessageBox::warning(0, "", "no file db");
     }
-    delete ordersList;
-
-    file.remove();
-    newFile.rename(DataBase::getTableOrders());
-
-    std::vector<OrderPosition>* positionsList = new std::vector<OrderPosition>(DataBase::getAllPositions());
-    QFile newFilePositions("temp2.txt");
-    QFile filePositions(DataBase::getTableOrderPositions());
-    if (newFilePositions.open(QIODevice::WriteOnly)) 
+    else
     {
-        QTextStream stream(&newFilePositions);
-
-        for (int i = 0; i < positionsList->size(); ++i)
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setHostName("OrderBasePrint_dataBase");
+        db.setDatabaseName("OrderBasePrint_dataBase.db");
+        if (!db.open())
         {
-            if (editOrder.getId() != (*positionsList)[i].getIdOrder()) 
-            {
-                stream << QString::fromStdString(
-                    std::to_string((*positionsList)[i].getIdPosition()) + "~" +
-                    std::to_string((*positionsList)[i].getIdOrder()) + "~" +
-                    (*positionsList)[i].getDescription() + "~" +
-                    (*positionsList)[i].getIssue() + "~" +
-                    (*positionsList)[i].getQuantity() + "~" +
-                    "\r\n");
-            }
-        }
-        newFilePositions.close();
-
-        if (stream.status() != QTextStream::Ok) 
-        {
-            //qDebug() << "Ошибка записи файла";
-        }
-    }
-    delete positionsList;
-
-    if (newFilePositions.open(QIODevice::Append)) 
-    {
-        QTextStream stream(&newFilePositions);
-        for (int i = 0; i < editOrder.getPositionsList().size(); ++i)
-        {
-            stream << QString::fromStdString(
-                std::to_string(editOrder.getPositionsList()[i].getIdPosition()) + "~" +
-                std::to_string(editOrder.getId()) + "~" +
-                editOrder.getPositionsList()[i].getDescription() + "~" +
-                editOrder.getPositionsList()[i].getIssue() + "~" +
-                editOrder.getPositionsList()[i].getQuantity() + "~" +
-                "\r\n");
+            QMessageBox::warning(0, "", "error open database");
         }
     }
 
-    filePositions.remove();
-    newFilePositions.rename(DataBase::getTableOrderPositions());
+    QSqlQuery query;
+    query.prepare("UPDATE " + DataBase::getTableOrders() + 
+        " SET date=?, client=?, amount=?, payment=?, manager=?, designer=?, availability=?, remark=?, loginCreate=?, loginEdit=?, loginAvailability=?, dateTimeCreate=?, dateTimeEdit=?, dateTimeAvailability=?"
+        "  WHERE _id=" + QString::number(editOrder.getId()));
+    query.addBindValue(editOrder.getDate().toString("dd.MM.yyyy"));
+    query.addBindValue(editOrder.getClient());
+    query.addBindValue(QString::fromStdString(editOrder.getAmount()));
+    query.addBindValue(QString::fromStdString(editOrder.getPayment()));
+    query.addBindValue(editOrder.getManager());
+    query.addBindValue(editOrder.getDesigner());
+    query.addBindValue(QString::fromStdString(editOrder.getAvailability()));
+    query.addBindValue(QString::fromStdString(editOrder.getRemark()));
+    query.addBindValue(editOrder.getLoginCreate());
+    query.addBindValue(editOrder.getLoginEdit());
+    query.addBindValue(editOrder.getLoginAvailability());
+    query.addBindValue(editOrder.getDateTimeCreate().toString("dd.MM.yyyy hh:mm"));
+    query.addBindValue(editOrder.getDateTimeEdit().toString("dd.MM.yyyy hh:mm"));
+    query.addBindValue(editOrder.getDateTimeAvailability().toString("dd.MM.yyyy hh:mm"));
+
+    if (!query.exec()) QMessageBox::warning(0, "", "edit order is unsuccessfully");
+
+    db.close();
+
+    DataBase::removePositionByIdOrder(editOrder.getId());
+
+    for (int i = 0; i < editOrder.getPositionsList().size(); ++i)
+    {
+        DataBase::addPosition(editOrder.getId(), editOrder.getPositionsList()[i]);
+    }
 }
 
 void DataBase::setAvailabilityOrder(int orderId, int loginEditId) 
@@ -831,115 +837,108 @@ void DataBase::addLogin(const StaffLogin& login)
 {
     //сохраняем логин в БД
 
-    QFile file(DataBase::getTableLogins());
-    if (file.open(QIODevice::Append)) 
+    QSqlDatabase db;
+
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
     {
-        QTextStream stream(&file);
-
-        stream << QString::fromStdString(std::to_string(
-            login.getId()) + "~" + 
-            login.getName() + "~" + 
-            login.getPosition() + "~" + 
-            login.getLogin() + "~" + 
-            login.getPassword() + 
-            "\r\n");
-        file.close();
-
-        if (stream.status() != QTextStream::Ok) 
+        QMessageBox::warning(0, "", "no file db");
+    }
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setHostName("OrderBasePrint_dataBase");
+        db.setDatabaseName("OrderBasePrint_dataBase.db");
+        if (!db.open())
         {
-            //qDebug() << "Ошибка записи файла";
+            QMessageBox::warning(0, "", "error open database");
         }
     }
+
+    QSqlQuery query;
+    query.prepare("INSERT INTO " + DataBase::getTableLogins() + " (name, position, login, password)"
+        "VALUES (:name, :position, :login, :password);");
+    query.bindValue(":name", QString::fromStdString(login.getName()));
+    query.bindValue(":position", QString::fromStdString(login.getPosition()));
+    query.bindValue(":login", QString::fromStdString(login.getLogin()));
+    query.bindValue(":password", QString::fromStdString(login.getPassword()));
+
+    if (!query.exec()) QMessageBox::warning(0, "", "error add Login ");
+    db.close();
 }
 
 StaffLogin DataBase::getLogin(int loginId) 
 {
     //получаем логин из БД
+
     StaffLogin login;
-    QFile file(DataBase::getTableLogins());
-    char sep = '~';
 
-    if (file.open(QIODevice::ReadOnly))
+    QSqlDatabase db;
+
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
     {
-        QTextStream stream(&file);
-        QString str;
-        while (!stream.atEnd())
-        {
-            std::vector<std::string> tokens;
-            std::string s = stream.readLine().toStdString();
-            for (size_t p = 0, q = 0; p != s.npos; p = q)
-                tokens.push_back(s.substr(p + (p != 0), (q = s.find(sep, p + 1)) - p - (p != 0)));
-
-            if (std::stoi(tokens[0]) == loginId) 
-            {
-                login.setId(tokens[0]);
-                login.setName(tokens[1]);
-                login.setPosition(tokens[2]);
-                login.setLogin(tokens[3]);
-                login.setPassword(tokens[4]);
-            }
-        }
-
-        if (stream.status() != QTextStream::Ok)
-        {
-            //qDebug() << "Ошибка чтения файла";
-        }
-        file.close();
+        QMessageBox::warning(0, "", "no file db");
     }
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setHostName("OrderBasePrint_dataBase");
+        db.setDatabaseName("OrderBasePrint_dataBase.db");
+        if (!db.open())
+        {
+            QMessageBox::warning(0, "", "error open database");
+        }
+    }
+
+    QSqlQuery query("SELECT * FROM " + DataBase::getTableLogins() + " WHERE _id=" + QString::number(loginId));
+
+    while (query.next())
+    {
+        login.setId(loginId);
+        login.setName(query.value(1).toString().toStdString());
+        login.setPosition(query.value(2).toString().toStdString());
+        login.setLogin(query.value(3).toString().toStdString());
+        login.setPassword(query.value(4).toString().toStdString());
+    }
+
+    db.close();
+
     return login;
 }
 
 std::vector<StaffLogin> DataBase::getLoginsList() 
 {
     std::vector<StaffLogin> loginsList;
-    QFile file(DataBase::getTableLogins());
-    char sep = '~';
 
-    if (file.open(QIODevice::ReadOnly))
+    QSqlDatabase db;
+
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
     {
-        QTextStream stream(&file);
-        QString str;
-        while (!stream.atEnd())
-        {
-            StaffLogin login;
-
-            std::vector<std::string> tokens;
-            std::string s = stream.readLine().toStdString();
-            for (size_t p = 0, q = 0; p != s.npos; p = q)
-                tokens.push_back(s.substr(p + (p != 0), (q = s.find(sep, p + 1)) - p - (p != 0)));
-            login.setId(tokens[0]);
-            login.setName(tokens[1]);
-            login.setPosition(tokens[2]);
-            login.setLogin(tokens[3]);
-            login.setPassword(tokens[4]);
-            loginsList.push_back(login);
-        }
-
-        if (stream.status() != QTextStream::Ok)
-        {
-            //qDebug() << "Ошибка чтения файла";
-        }
-        file.close();
+        QMessageBox::warning(0, "", "no file db");
     }
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setHostName("OrderBasePrint_dataBase");
+        db.setDatabaseName("OrderBasePrint_dataBase.db");
+        if (!db.open())
+        {
+            QMessageBox::warning(0, "", "error open database");
+        }
+    }
+
+    QSqlQuery query("SELECT * FROM " + DataBase::getTableLogins());
+    while (query.next())
+    {
+        StaffLogin staffLogin; 
+        staffLogin.setId(query.value(0).toInt());
+        staffLogin.setName(query.value(1).toString().toStdString());
+        staffLogin.setPosition(query.value(2).toString().toStdString());
+        staffLogin.setLogin(query.value(3).toString().toStdString());
+        staffLogin.setPassword(query.value(4).toString().toStdString());
+        loginsList.push_back(staffLogin);
+    }
+
+    db.close();
 
     return loginsList;
 }
-
-
-/*
-bool DataBase::restoreDataBase()
-{
-
-}
-
-bool DataBase::openDataBase()
-{
-
-}
-
-
-void DataBase::closeDataBase()
-{
-
-}
-*/

@@ -11,7 +11,7 @@ private:
 
 public:
 	Staff(int, const std::string&, const std::string&);
-	Staff(const std::string&, const std::string&, const std::string&);
+	Staff(const std::string&, const std::string&);
 	Staff(int);
 	Staff() = default;
 	~Staff() = default;

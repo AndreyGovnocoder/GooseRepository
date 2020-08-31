@@ -182,7 +182,7 @@ std::vector<OrderPosition> CreateOrderDialog::getPositionsList()
 	//получаем список позиций заказа
 
 	std::vector<OrderPosition> positionsList;
-	int lastIdPosition = DataBase::getLastId(DataBase::getTableOrderPositions()) + 1;
+	//int lastIdPosition = DataBase::getLastId(DataBase::getTableOrderPositions()) + 1;
 
 	for (int i = 0; i < positionTableWidget->rowCount(); ++i)
 	{
@@ -190,16 +190,22 @@ std::vector<OrderPosition> CreateOrderDialog::getPositionsList()
 		std::string quantity = positionTableWidget->item(i, 1)->text().toStdString();
 		std::string issue = positionTableWidget->item(i, 2)->text().toStdString();
 
-		position.setIdPosition(lastIdPosition + i);
+		//position.setIdPosition(lastIdPosition + i);
 
-		if (_idEditOrder == -1)
+		/*if (_idEditOrder == -1)
 		{
 			position.setIdOrder(DataBase::getLastId(DataBase::getTableOrders()) + 1);
 		}
 		else
 		{
 			position.setIdOrder(_idEditOrder);
+		}*/
+
+		if (_idEditOrder != -1)
+		{
+			position.setIdOrder(_idEditOrder);
 		}
+
 		position.setQuantity(quantity);
 		position.setIssue(issue);
 
@@ -247,7 +253,7 @@ Order CreateOrderDialog::getOrder()
 
 	if (_idEditOrder == -1)
 	{
-		order.setId(DataBase::getLastId(DataBase::getTableOrders()) + 1);
+		//order.setId(DataBase::getLastId(DataBase::getTableOrders()) + 1);
 		order.setLoginCreate(getLogin().getId());
 		order.setLoginEdit(0);
 		order.setLoginAvailability(0);
@@ -278,34 +284,34 @@ Order CreateOrderDialog::getOrder()
 	if (managersComboBox->currentIndex() != -1)
 	{
 		managerId = managersComboBox->currentData().toInt();
-		order.setManager(DataBase::getStaff(managerId));
+		order.setManager(managerId);
 	}
 	else
 	{
 		//QMessageBox::information(this, "Title", "не выбран менеджер");
-		order.setManager(Staff(0));
+		order.setManager(0);
 	}
 
 	if (designersComboBox->currentIndex() != -1) 
 	{
 		designerId = designersComboBox->currentData().toInt();
-		order.setDesigner(DataBase::getStaff(designerId));
+		order.setDesigner(designerId);
 	}
 	else
 	{
 		//QMessageBox::information(this, "Title", "не выбран дизайнер");
-		order.setDesigner(Staff(0));
+		order.setDesigner(0);
 	}
 
 	if (clientsComboBox->currentIndex() != -1) 
 	{
 		clientId = clientsComboBox->currentData().toInt();
-		order.setClient(DataBase::getClient(clientId));
+		order.setClient(clientId);
 	}
 	else
 	{
 		//QMessageBox::information(this, "Title", "не выбран клиент");
-		order.setClient(Client(0, "", "", ""));
+		order.setClient(0);
 	}
 
 	order.setPositionsList(getPositionsList());

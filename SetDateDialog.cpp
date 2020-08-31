@@ -1,12 +1,7 @@
 #include "SetDateDialog.h"
-#include "qdatetime.h"
 
-SetDateDialog::SetDateDialog(QDate date, QWidget* parent)
+SetDateDialog::SetDateDialog(QWidget* parent)
 	: QDialog(parent)
 {
 	setupUi(this);
-}
-
-SetDateDialog::~SetDateDialog()
-{
 }
