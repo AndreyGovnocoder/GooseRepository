@@ -7,13 +7,14 @@ class AddStaffForm : public QDialog, public Ui::AddStaffForm
 {
 	Q_OBJECT
 
+private:
+	std::string _position;
+
 public:
 	AddStaffForm(QWidget *parent = Q_NULLPTR);
-	AddStaffForm(std::string, QWidget* parent = Q_NULLPTR);
-	~AddStaffForm();
-	void setPosition(std::string);
-	std::string getPosition();
+	AddStaffForm(const std::string&, QWidget* parent = Q_NULLPTR);
+	~AddStaffForm() = default;
+	void setPosition(const std::string& position) { _position = position; };
+	const std::string& getPosition() const { return _position; };
 
-private:
-	std::string position;
 };

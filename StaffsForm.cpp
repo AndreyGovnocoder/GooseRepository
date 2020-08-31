@@ -8,52 +8,57 @@ StaffsForm::StaffsForm(QWidget *parent)
 	: QWidget(parent)
 {
 	setupUi(this);
-	StaffsForm::setSelectedStaffId(-1);
-	StaffsForm::setStaffList();
+	setSelectedStaffId(-1);
+	setStaffList();
 	editBtn->setDisabled(true);
 	deleteBtn->setDisabled(true);
 }
 
-StaffsForm::~StaffsForm(){}
-
-void StaffsForm::slot1() {
+void StaffsForm::addManagerSlot() 
+{
 	//добавить менеджера
 
 	AddStaffForm* addStaffDialog = new AddStaffForm(this);
 	addStaffDialog->setWindowTitle("Менеджер");
 
-	if (addStaffDialog->exec()) {
-		Staff* newStaff = new Staff();
-		newStaff->setPosition("менеджер");
-		newStaff->setName(addStaffDialog->nameLineEdit->text().toStdString());
+	if (addStaffDialog->exec()) 
+	{
+		Staff newStaff;
+		newStaff.setPosition("менеджер");
+		newStaff.setName(addStaffDialog->nameLineEdit->text().toStdString());
 		int newId = DataBase::getLastId(DataBase::getTableStaff());
-		newId++;
-		newStaff->setId(newId);
+		++newId;
+		newStaff.setId(newId);
 		DataBase::addStaff(newStaff);
-		delete newStaff;
 		setStaffList();
 	}
+
+	delete addStaffDialog;
 }
 
-void StaffsForm::slot4() {
+void StaffsForm::addDesignerSlot()
+{
 	//добавить дизайнера
 
 	AddStaffForm* addStaffDialog = new AddStaffForm(this);
 	addStaffDialog->setWindowTitle("Дизайнер");
-	if (addStaffDialog->exec()) {
-		Staff* newStaff = new Staff();
-		newStaff->setPosition("дизайнер");
-		newStaff->setName(addStaffDialog->nameLineEdit->text().toStdString());
+	if (addStaffDialog->exec()) 
+	{
+		Staff newStaff;
+		newStaff.setPosition("дизайнер");
+		newStaff.setName(addStaffDialog->nameLineEdit->text().toStdString());
 		int newId = DataBase::getLastId(DataBase::getTableStaff());
-		newId++;
-		newStaff->setId(newId);
+		++newId;
+		newStaff.setId(newId);
 		DataBase::addStaff(newStaff);
-		delete newStaff;
 		setStaffList();
 	}
+
+	delete addStaffDialog;
 }
 
-void StaffsForm::setStaffList() {
+void StaffsForm::setStaffList() 
+{
 	//заполняем listWidget'ы сотрудниками
 
 	designersListWidget->clear();
@@ -62,49 +67,53 @@ void StaffsForm::setStaffList() {
 	deleteBtn->setDisabled(true);
 	setSelectedStaffId(-1);
 
-	std::vector<Staff>* staffList = new std::vector<Staff>(DataBase::getStaffList());
-	for (int i = 0; i < staffList->size(); i++) {
-		QListWidgetItem* item = new QListWidgetItem(QString::fromStdString((*staffList)[i].getName()));
-		item->setData(Qt::UserRole, (*staffList)[i].getId());
-		if ((*staffList)[i].getPosition() == "менеджер") {
+	std::vector<Staff> staffList(DataBase::getStaffList());
+	for (int i = 0; i < staffList.size(); ++i)
+	{
+		QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(staffList[i].getName()));
+		item->setData(Qt::UserRole, staffList[i].getId());
+		if (staffList[i].getPosition() == "менеджер") 
+		{
 			managersListWidget->addItem(item);
 		}
-		else {
+		else 
+		{
 			designersListWidget->addItem(item);
 		}
 	}
 }
 
-void StaffsForm::slot2() {
+void StaffsForm::editStaffSlot() 
+{
 	//редактировать сотрудника
 
-	if (getSelectedStaffId() != -1) {
+	if (getSelectedStaffId() != -1) 
+	{
 		EditStaffDialog editDialog(this);
 		editDialog.setWindowTitle("Редактирование сотрудника");
-		Staff staff;
-		for (int i = 0; i < DataBase::getStaffList().size(); i++) {
-			if (DataBase::getStaffList()[i].getId() == getSelectedStaffId()) {
-				staff.setName(DataBase::getStaffList()[i].getName());
-				staff.setPosition(DataBase::getStaffList()[i].getPosition());
-				staff.setId(DataBase::getStaffList()[i].getId());
-			}
-		}
+		Staff staff(DataBase::getStaff(getSelectedStaffId()));
+
 		editDialog.nameLineEdit->setText(QString::fromStdString(staff.getName()));
-		if (staff.getPosition() == "менеджер") {
+		if (staff.getPosition() == "менеджер") 
+		{
 			editDialog.rBtnManager->setChecked(true);
 		}
-		else if (staff.getPosition() == "дизайнер") {
+		else if (staff.getPosition() == "дизайнер") 
+		{
 			editDialog.rBtnDesigner->setChecked(true);
 		}
 
-		if (editDialog.exec()) {
+		if (editDialog.exec()) 
+		{
 			Staff editStaff;
 			editStaff.setId(staff.getId());
 			editStaff.setName(editDialog.nameLineEdit->text().toStdString());
-			if (editDialog.rBtnDesigner->isChecked()) {
+			if (editDialog.rBtnDesigner->isChecked()) 
+			{
 				editStaff.setPosition("дизайнер");
 			}
-			else if (editDialog.rBtnManager->isChecked()) {
+			else if (editDialog.rBtnManager->isChecked()) 
+			{
 				editStaff.setPosition("менеджер");
 			}
 
@@ -114,39 +123,36 @@ void StaffsForm::slot2() {
 	}
 }
 
-void StaffsForm::slot3() {
+void StaffsForm::removeStaffSlot() 
+{
 	//удалить сотрудника
 
-	if (getSelectedStaffId() != -1) {
+	if (getSelectedStaffId() != -1) 
+	{
 		DataBase::removeStaff(getSelectedStaffId());
 		setStaffList();
 	}
 }
 
-void StaffsForm::slot5() {
+void StaffsForm::clickOnManagerSlot() 
+{
 	//выбор менеджера
 
 	editBtn->setEnabled(true);
 	deleteBtn->setEnabled(true);
 	designersListWidget->clearSelection();
-	QListWidgetItem* curItemManagers = managersListWidget->currentItem();
-	setSelectedStaffId(curItemManagers->data(Qt::UserRole).toInt());
+	int staffId = managersListWidget->currentItem()->data(Qt::UserRole).toInt();
+	setSelectedStaffId(staffId);
 }
 
-void StaffsForm::slot6() {
+void StaffsForm::clickOnDesignerSlot()
+{
 	//выбор дизайнера
 
 	editBtn->setEnabled(true);
 	deleteBtn->setEnabled(true);
 	managersListWidget->clearSelection();
-	QListWidgetItem* curItemDesigners = designersListWidget->currentItem();
-	setSelectedStaffId(curItemDesigners->data(Qt::UserRole).toInt());
+	int staffId = designersListWidget->currentItem()->data(Qt::UserRole).toInt();
+	setSelectedStaffId(staffId);
 }
 
-void StaffsForm::setSelectedStaffId(int id) {
-	StaffsForm::staffId = id;
-}
-
-int StaffsForm::getSelectedStaffId() {
-	return StaffsForm::staffId;
-}

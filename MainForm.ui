@@ -677,7 +677,7 @@
    <sender>ordersTableWidget</sender>
    <signal>itemClicked(QTableWidgetItem*)</signal>
    <receiver>MainFormClass</receiver>
-   <slot>slot8()</slot>
+   <slot>clickOnRowSlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>380</x>
@@ -693,7 +693,7 @@
    <sender>createOrderBtn</sender>
    <signal>clicked()</signal>
    <receiver>MainFormClass</receiver>
-   <slot>slot4()</slot>
+   <slot>createOrderSlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>48</x>
@@ -709,7 +709,7 @@
    <sender>editOrderBtn</sender>
    <signal>clicked()</signal>
    <receiver>MainFormClass</receiver>
-   <slot>slot6()</slot>
+   <slot>editOrderSlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>173</x>
@@ -725,7 +725,7 @@
    <sender>deleteOrderBtn</sender>
    <signal>clicked()</signal>
    <receiver>MainFormClass</receiver>
-   <slot>slot7()</slot>
+   <slot>removeOrderSlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>259</x>
@@ -741,7 +741,7 @@
    <sender>printBtn</sender>
    <signal>clicked()</signal>
    <receiver>MainFormClass</receiver>
-   <slot>slot5()</slot>
+   <slot>printOrderSlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>889</x>
@@ -757,7 +757,7 @@
    <sender>action_addClient</sender>
    <signal>triggered()</signal>
    <receiver>MainFormClass</receiver>
-   <slot>slot1()</slot>
+   <slot>addClientSlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -773,7 +773,7 @@
    <sender>action_getClientsList</sender>
    <signal>triggered()</signal>
    <receiver>MainFormClass</receiver>
-   <slot>slot2()</slot>
+   <slot>clientListSlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -789,7 +789,7 @@
    <sender>action_getStaffList</sender>
    <signal>triggered()</signal>
    <receiver>MainFormClass</receiver>
-   <slot>slot3()</slot>
+   <slot>staffListSlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -805,7 +805,7 @@
    <sender>ordersTableWidget</sender>
    <signal>itemPressed(QTableWidgetItem*)</signal>
    <receiver>MainFormClass</receiver>
-   <slot>slot8()</slot>
+   <slot>clickOnRowSlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>548</x>
@@ -821,7 +821,7 @@
    <sender>searchLineEdit</sender>
    <signal>textEdited(QString)</signal>
    <receiver>MainFormClass</receiver>
-   <slot>slot9()</slot>
+   <slot>searchOnClientSlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>410</x>
@@ -835,14 +835,14 @@
   </connection>
  </connections>
  <slots>
-  <slot>slot1()</slot>
-  <slot>slot2()</slot>
-  <slot>slot3()</slot>
-  <slot>slot4()</slot>
-  <slot>slot5()</slot>
-  <slot>slot6()</slot>
-  <slot>slot7()</slot>
-  <slot>slot8()</slot>
-  <slot>slot9()</slot>
+  <slot>addClientSlot()</slot>
+  <slot>clientListSlot()</slot>
+  <slot>staffListSlot()</slot>
+  <slot>createOrderSlot()</slot>
+  <slot>printOrderSlot()</slot>
+  <slot>editOrderSlot()</slot>
+  <slot>removeOrderSlot()</slot>
+  <slot>clickOnRowSlot()</slot>
+  <slot>searchOnClientSlot()</slot>
  </slots>
 </ui>

@@ -3,38 +3,14 @@
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qstring.h>
-#include <QtWidgets\qmessagebox.h>
 
-DataBase::DataBase(){}
-
-DataBase::~DataBase(){}
-
-void DataBase::connectToDataBase() {
+void DataBase::connectToDataBase() 
+{
     // подключаемся к базе данных
-
 }
 
-QString DataBase::getTableClients() {
-    return "clients.txt";
-}
-
-QString DataBase::getTableStaff() {
-    return "staff.txt";
-}
-
-QString DataBase::getTableOrders() {
-    return "orders.txt";
-}
-
-QString DataBase::getTableOrderPositions() {
-    return "positions.txt";
-}
-
-QString DataBase::getTableLogins() {
-    return "logins";
-}
-
-std::vector<Client> DataBase::getClientsList() {
+std::vector<Client> DataBase::getClientsList() 
+{
     //получаем список клиентов из БД
 
     QFile file(DataBase::getTableClients());
@@ -70,25 +46,27 @@ std::vector<Client> DataBase::getClientsList() {
     return clientsList;
 }
 
-void DataBase::addClient(Client* newClient) {
+void DataBase::addClient(const Client& newClient) 
+{
     //добавляем клиента в БД
 
     QFile file(DataBase::getTableClients());
-    if (file.open(QIODevice::Append)) {
+    if (file.open(QIODevice::Append)) 
+    {
         QTextStream stream(&file);
 
-        stream << QString::fromStdString(std::to_string(newClient->getId()) + "~" + newClient->getName() + "~" + newClient->getPhone() + "~" + newClient->getMail() + "\r\n");
+        stream << QString::fromStdString(std::to_string(newClient.getId()) + "~" + newClient.getName() + "~" + newClient.getPhone() + "~" + newClient.getMail() + "\r\n");
         file.close();
 
-        if (stream.status() != QTextStream::Ok) {
+        if (stream.status() != QTextStream::Ok) 
+        {
             //qDebug() << "Ошибка записи файла";
         }
     }
-
-    delete newClient;
 }
 
-Client DataBase::getClient(int clientId) {
+Client DataBase::getClient(int clientId) 
+{
     //получаем клиента по id
 
     Client client;
@@ -105,7 +83,8 @@ Client DataBase::getClient(int clientId) {
             std::string s = stream.readLine().toStdString();
             for (size_t p = 0, q = 0; p != s.npos; p = q)
                 tokens.push_back(s.substr(p + (p != 0), (q = s.find(sep, p + 1)) - p - (p != 0)));
-            if (std::stoi(tokens[0]) == clientId) {
+            if (std::stoi(tokens[0]) == clientId) 
+            {
                 client.setId(tokens[0]);
                 client.setName(tokens[1]);
                 client.setPhone(tokens[2]);
@@ -123,18 +102,22 @@ Client DataBase::getClient(int clientId) {
     return client;
 }
 
-void DataBase::removeClient(int id) {
+void DataBase::removeClient(int id) 
+{
     //удаляем клиента из БД
 
     QFile newFile("temp.txt");
     QFile file(DataBase::getTableClients());
 
 
-    if (newFile.open(QIODevice::WriteOnly)) {
+    if (newFile.open(QIODevice::WriteOnly)) 
+    {
         QTextStream stream(&newFile);
 
-        for (int i = 0; i < DataBase::getClientsList().size(); i++) {
-            if (DataBase::getClientsList()[i].getId() != id) {
+        for (int i = 0; i < DataBase::getClientsList().size(); ++i)
+        {
+            if (DataBase::getClientsList()[i].getId() != id) 
+            {
                 stream << QString::fromStdString(std::to_string(
                       DataBase::getClientsList()[i].getId()) + "~"
                     + DataBase::getClientsList()[i].getName() + "~"
@@ -148,7 +131,8 @@ void DataBase::removeClient(int id) {
     newFile.rename(DataBase::getTableClients());
 }
 
-int DataBase::getLastId(QString table) {
+int DataBase::getLastId(const QString& table) 
+{
     // получаем последний id в таблице БД
 
     int lastId;
@@ -180,24 +164,29 @@ int DataBase::getLastId(QString table) {
     return lastId;
 }
 
-void DataBase::editClient(Client client) {
+void DataBase::editClient(const Client& client) 
+{
     //редактируем клиента
 
     QFile newFile("temp.txt");
     QFile file(DataBase::getTableClients());
 
-    if (newFile.open(QIODevice::WriteOnly)) {
+    if (newFile.open(QIODevice::WriteOnly)) 
+    {
         QTextStream stream(&newFile);
 
-        for (int i = 0; i < DataBase::getClientsList().size(); i++) {
-            if (DataBase::getClientsList()[i].getId() != client.getId()) {
+        for (int i = 0; i < DataBase::getClientsList().size(); ++i)
+        {
+            if (DataBase::getClientsList()[i].getId() != client.getId()) 
+            {
                 stream << QString::fromStdString(std::to_string(
                     DataBase::getClientsList()[i].getId()) + "~"
                     + DataBase::getClientsList()[i].getName() + "~"
                     + DataBase::getClientsList()[i].getPhone() + "~"
                     + DataBase::getClientsList()[i].getMail() + "\r\n");
             }
-            else {
+            else 
+            {
                 stream << QString::fromStdString(std::to_string(
                     client.getId()) + "~"
                     + client.getName() + "~"
@@ -212,7 +201,8 @@ void DataBase::editClient(Client client) {
     newFile.rename(DataBase::getTableClients());
 }
 
-std::vector<Staff> DataBase::getStaffList() {
+std::vector<Staff> DataBase::getStaffList() 
+{
     //получаем список сотрудников из БД
 
     std::vector<Staff> staffList;
@@ -246,27 +236,31 @@ std::vector<Staff> DataBase::getStaffList() {
     return staffList;
 }
 
-void DataBase::addStaff(Staff* newStaff) {
+void DataBase::addStaff(const Staff& newStaff) 
+{
     //добавляем сотрудника в БД
 
     QFile file(DataBase::getTableStaff());
-    if (file.open(QIODevice::Append)) {
+    if (file.open(QIODevice::Append)) 
+    {
         QTextStream stream(&file);
 
         stream << QString::fromStdString(
-            std::to_string(newStaff->getId()) + "~" + 
-            newStaff->getPosition() + "~" + 
-            newStaff->getName() + 
+            std::to_string(newStaff.getId()) + "~" + 
+            newStaff.getPosition() + "~" + 
+            newStaff.getName() + 
             "\r\n");
         file.close();
 
-        if (stream.status() != QTextStream::Ok) {
+        if (stream.status() != QTextStream::Ok) 
+        {
             //qDebug() << "Ошибка записи файла";
         }
     }
 }
 
-Staff DataBase::getStaff(int staffId) {
+Staff DataBase::getStaff(int staffId) 
+{
     //получаем сотрудника по id
     Staff staff;
     QFile file(DataBase::getTableStaff());
@@ -283,7 +277,8 @@ Staff DataBase::getStaff(int staffId) {
             for (size_t p = 0, q = 0; p != s.npos; p = q)
                 tokens.push_back(s.substr(p + (p != 0), (q = s.find(sep, p + 1)) - p - (p != 0)));
 
-            if (std::stoi(tokens[0]) == staffId) {
+            if (std::stoi(tokens[0]) == staffId) 
+            {
                 staff.setId(tokens[0]);
                 staff.setPosition(tokens[1]);
                 staff.setName(tokens[2]);
@@ -301,17 +296,21 @@ Staff DataBase::getStaff(int staffId) {
     return staff;
 }
 
-void DataBase::removeStaff(int staffId) {
+void DataBase::removeStaff(int staffId) 
+{
     //удаляем сотрудника из БД
 
     QFile newFile("temp.txt");
     QFile file(DataBase::getTableStaff());
 
-    if (newFile.open(QIODevice::WriteOnly)) {
+    if (newFile.open(QIODevice::WriteOnly)) 
+    {
         QTextStream stream(&newFile);
 
-        for (int i = 0; i < DataBase::getStaffList().size(); i++) {
-            if (DataBase::getStaffList()[i].getId() != staffId) {
+        for (int i = 0; i < DataBase::getStaffList().size(); ++i)
+        {
+            if (DataBase::getStaffList()[i].getId() != staffId) 
+            {
                 stream << QString::fromStdString(
                     std::to_string(DataBase::getStaffList()[i].getId()) + "~" + 
                     DataBase::getStaffList()[i].getPosition() + "~" + 
@@ -325,24 +324,28 @@ void DataBase::removeStaff(int staffId) {
     newFile.rename(DataBase::getTableStaff());
 }
 
-void DataBase::editStaff(Staff editStaff) {
+void DataBase::editStaff(const Staff& editStaff) 
+{
     //редактируем сотрудника
 
     QFile newFile("temp.txt");
     QFile file(DataBase::getTableStaff());
-
-    if (newFile.open(QIODevice::WriteOnly)) {
+    if (newFile.open(QIODevice::WriteOnly)) 
+    {
         QTextStream stream(&newFile);
 
-        for (int i = 0; i < DataBase::getStaffList().size(); i++) {
-            if (DataBase::getStaffList()[i].getId() != editStaff.getId()) {
+        for (int i = 0; i < DataBase::getStaffList().size(); ++i)
+        {
+            if (DataBase::getStaffList()[i].getId() != editStaff.getId()) 
+            {
                 stream << QString::fromStdString(std::to_string(
                     DataBase::getStaffList()[i].getId()) + "~" + 
                     DataBase::getStaffList()[i].getPosition() + "~" + 
                     DataBase::getStaffList()[i].getName() + 
                     "\r\n");
             }
-            else {
+            else 
+            {
                 stream << QString::fromStdString(std::to_string(
                     editStaff.getId()) + "~" + 
                     editStaff.getPosition() + "~" + 
@@ -357,48 +360,52 @@ void DataBase::editStaff(Staff editStaff) {
     newFile.rename(DataBase::getTableStaff());
 }
 
-void DataBase::addOrder(Order* order) {
+void DataBase::addOrder(const Order& order) 
+{
     //добавляем заказ в БД
-
     QFile file(DataBase::getTableOrders());
-    if (file.open(QIODevice::Append)) {
+    if (file.open(QIODevice::Append)) 
+    {
         QTextStream stream(&file);
 
         stream << QString::fromStdString(
-            std::to_string(order->getId()) + "~" +
-            order->getDate().toString("dd.MM.yyyy").toStdString() + "~" +
-            std::to_string(order->getClient().getId()) + "~" +
-            order->getAmount() + "~" +
-            order->getPayment() + "~" +
-            std::to_string(order->getManager().getId()) + "~" +
-            std::to_string(order->getDesigner().getId()) + "~" +
-            order->getAvailability() + "~" +
-            order->getRemark() + "~" +
-            std::to_string(order->getLoginCreate()) + "~" +
-            std::to_string(order->getLoginEdit()) + "~" +
-            std::to_string(order->getLoginAvailability()) + "~" +
-            order->getDateTimeCreate().toString("dd.MM.yyyy hh:mm").toStdString() + "~" +
-            order->getDateTimeEdit().toString("dd.MM.yyyy hh:mm").toStdString() + "~" +
-            order->getDateTimeAvailability().toString("dd.MM.yyyy hh:mm").toStdString() + "~" +
+            std::to_string(order.getId()) + "~" +
+            order.getDate().toString("dd.MM.yyyy").toStdString() + "~" +
+            std::to_string(order.getClient().getId()) + "~" +
+            order.getAmount() + "~" +
+            order.getPayment() + "~" +
+            std::to_string(order.getManager().getId()) + "~" +
+            std::to_string(order.getDesigner().getId()) + "~" +
+            order.getAvailability() + "~" +
+            order.getRemark() + "~" +
+            std::to_string(order.getLoginCreate()) + "~" +
+            std::to_string(order.getLoginEdit()) + "~" +
+            std::to_string(order.getLoginAvailability()) + "~" +
+            order.getDateTimeCreate().toString("dd.MM.yyyy hh:mm").toStdString() + "~" +
+            order.getDateTimeEdit().toString("dd.MM.yyyy hh:mm").toStdString() + "~" +
+            order.getDateTimeAvailability().toString("dd.MM.yyyy hh:mm").toStdString() + "~" +
             "\r\n");
         file.close();
 
-        if (stream.status() != QTextStream::Ok) {
+        if (stream.status() != QTextStream::Ok) 
+        {
             //qDebug() << "Ошибка записи файла";
         }
     }
 
     QFile filePositions(DataBase::getTableOrderPositions());
-    if (filePositions.open(QIODevice::Append)) {
+    if (filePositions.open(QIODevice::Append)) 
+    {
         QTextStream stream(&filePositions);
 
-        for (int i = 0; i < order->getPositionsList().size(); i++) {
+        for (int i = 0; i < order.getPositionsList().size(); ++i)
+        {
             stream << QString::fromStdString(
-                std::to_string(order->getPositionsList()[i].getIdPosition()) + "~" +
-                std::to_string(order->getPositionsList()[i].getIdOrder()) + "~" +
-                order->getPositionsList()[i].getDescription() + "~" +
-                order->getPositionsList()[i].getIssue() + "~" +
-                order->getPositionsList()[i].getQuantity() + "~" +
+                std::to_string(order.getPositionsList()[i].getIdPosition()) + "~" +
+                std::to_string(order.getPositionsList()[i].getIdOrder()) + "~" +
+                order.getPositionsList()[i].getDescription() + "~" +
+                order.getPositionsList()[i].getIssue() + "~" +
+                order.getPositionsList()[i].getQuantity() + "~" +
                 "\r\n");
         }
 
@@ -408,11 +415,10 @@ void DataBase::addOrder(Order* order) {
             //qDebug() << "Ошибка записи файла";
         }
     }
-
-    delete order;
 }
 
-Order DataBase::getOrder(int orderId) {
+Order DataBase::getOrder(int orderId) 
+{
     //получаем заказ из БД по id
 
     Order order;
@@ -430,17 +436,21 @@ Order DataBase::getOrder(int orderId) {
             std::string s = stream.readLine().toStdString();
             for (size_t p = 0, q = 0; p != s.npos; p = q)
                 tokens.push_back(s.substr(p + (p != 0), (q = s.find(sep, p + 1)) - p - (p != 0)));
-            if (std::stoi(tokens[0]) == orderId) {
+
+            if (std::stoi(tokens[0]) == orderId) 
+            {
                 order.setId(std::stoi(tokens[0]));
                 QDate date = QDate::fromString(QString::fromStdString(tokens[1]), "dd.MM.yyyy");
                 order.setDate(date);
-                if (std::stoi(tokens[2]) != 0) {
+                if (std::stoi(tokens[2]) != 0) 
+                {
                     order.setClient(DataBase::getClient(std::stoi(tokens[2])));
                 }
                 else order.setClient(Client(0, "", "", ""));
                 order.setAmount(tokens[3]);
                 order.setPayment(tokens[4]);
-                if (std::stoi(tokens[5]) != 0) {
+                if (std::stoi(tokens[5]) != 0) 
+                {
                     order.setManager(DataBase::getStaff(std::stoi(tokens[5])));
                 }
                 else order.setManager(Staff(0));
@@ -474,7 +484,8 @@ Order DataBase::getOrder(int orderId) {
     return order;
 }
 
-std::vector<Order> DataBase::getOrdersList() {
+std::vector<Order> DataBase::getOrdersList() 
+{
     //получаем список заказов
 
     std::vector<Order> ordersList;
@@ -526,7 +537,8 @@ std::vector<Order> DataBase::getOrdersList() {
     return ordersList;
 }
 
-std::vector<OrderPosition> DataBase::getOrderPositionsList(int orderId) {
+std::vector<OrderPosition> DataBase::getOrderPositionsList(int orderId) 
+{
     //получаем список позиций по id заказа
 
     std::vector<OrderPosition> positionsList;
@@ -546,7 +558,8 @@ std::vector<OrderPosition> DataBase::getOrderPositionsList(int orderId) {
             for (size_t p = 0, q = 0; p != s.npos; p = q)
                 tokens.push_back(s.substr(p + (p != 0), (q = s.find(sep, p + 1)) - p - (p != 0)));
 
-            if (orderId == std::stoi(tokens[1])) {
+            if (orderId == std::stoi(tokens[1])) 
+            {
                 position.setIdOrder(std::stoi(tokens[1]));
                 position.setIdPosition(std::stoi(tokens[0]));
                 position.setDescription(tokens[2]);
@@ -567,7 +580,8 @@ std::vector<OrderPosition> DataBase::getOrderPositionsList(int orderId) {
     return positionsList;
 }
 
-std::vector<OrderPosition> DataBase::getAllPositions() {
+std::vector<OrderPosition> DataBase::getAllPositions() 
+{
     //получаем список позиций всех заказов
 
     std::vector<OrderPosition> positionsList;
@@ -606,18 +620,22 @@ std::vector<OrderPosition> DataBase::getAllPositions() {
     return positionsList;
 }
 
-void DataBase::removeOrder(int orderId) {
+void DataBase::removeOrder(int orderId) 
+{
     //удаляем Заказ из БД
 
     QFile newFile("temp.txt");
     QFile file(DataBase::getTableOrders());
 
-    if (newFile.open(QIODevice::WriteOnly)) {
+    if (newFile.open(QIODevice::WriteOnly)) 
+    {
         QTextStream stream(&newFile);
         std::vector<Order>* ordersList = new std::vector<Order>(DataBase::getOrdersList());
 
-        for (int i = 0; i < ordersList->size(); i++) {
-            if ((*ordersList)[i].getId() != orderId) {
+        for (int i = 0; i < ordersList->size(); ++i)
+        {
+            if ((*ordersList)[i].getId() != orderId) 
+            {
                 stream << QString::fromStdString(
                     std::to_string((*ordersList)[i].getId()) + "~" +
                     (*ordersList)[i].getDate().toString("dd.MM.yyyy").toStdString() + "~" +
@@ -637,7 +655,8 @@ void DataBase::removeOrder(int orderId) {
                     "\r\n");
                 file.close();
 
-                if (stream.status() != QTextStream::Ok) {
+                if (stream.status() != QTextStream::Ok) 
+                {
                     //qDebug() << "Ошибка записи файла";
                 }
             }
@@ -651,12 +670,15 @@ void DataBase::removeOrder(int orderId) {
     QFile newFilePositions("temp2.txt");
     QFile filePositions(DataBase::getTableOrderPositions());
 
-    if (newFilePositions.open(QIODevice::WriteOnly)) {
+    if (newFilePositions.open(QIODevice::WriteOnly)) 
+    {
         QTextStream stream(&newFilePositions);
         std::vector<OrderPosition>* orderPositionsList = new std::vector<OrderPosition>(DataBase::getAllPositions());
 
-        for (int i = 0; i < orderPositionsList->size(); i++) {
-            if ((*orderPositionsList)[i].getIdOrder() != orderId) {
+        for (int i = 0; i < orderPositionsList->size(); ++i)
+        {
+            if ((*orderPositionsList)[i].getIdOrder() != orderId) 
+            {
                 stream << QString::fromStdString(
                     std::to_string((*orderPositionsList)[i].getIdPosition()) + "~" +
                     std::to_string((*orderPositionsList)[i].getIdOrder()) + "~" +
@@ -673,7 +695,8 @@ void DataBase::removeOrder(int orderId) {
     newFilePositions.rename(DataBase::getTableOrderPositions());
 }
 
-void DataBase::editOrder(Order *editOrder) {
+void DataBase::editOrder(const Order& editOrder) 
+{
     //редактируем заказ
 
     QFile newFile("temp.txt");
@@ -681,11 +704,14 @@ void DataBase::editOrder(Order *editOrder) {
 
     std::vector<Order>* ordersList = new std::vector<Order>(DataBase::getOrdersList());
 
-    if (newFile.open(QIODevice::WriteOnly)) {
+    if (newFile.open(QIODevice::WriteOnly)) 
+    {
         QTextStream stream(&newFile);
 
-        for (int i = 0; i < ordersList->size(); i++) {
-            if ((*ordersList)[i].getId() != editOrder->getId()) {
+        for (int i = 0; i < ordersList->size(); ++i)
+        {
+            if ((*ordersList)[i].getId() != editOrder.getId()) 
+            {
                 stream << QString::fromStdString(
                     std::to_string((*ordersList)[i].getId()) + "~" +
                     (*ordersList)[i].getDate().toString("dd.MM.yyyy").toStdString() + "~" +
@@ -704,28 +730,30 @@ void DataBase::editOrder(Order *editOrder) {
                     (*ordersList)[i].getDateTimeAvailability().toString("dd.MM.yyyy hh:mm").toStdString() + "~" +
                     "\r\n");
             }
-            else {
+            else 
+            {
                 stream << QString::fromStdString(
-                    std::to_string(editOrder->getId()) + "~" +
-                    editOrder->getDate().toString("dd.MM.yyyy").toStdString() + "~" +
-                    std::to_string(editOrder->getClient().getId()) + "~" +
-                    editOrder->getAmount() + "~" +
-                    editOrder->getPayment() + "~" +
-                    std::to_string(editOrder->getManager().getId()) + "~" +
-                    std::to_string(editOrder->getDesigner().getId()) + "~" +
-                    editOrder->getAvailability() + "~" +
-                    editOrder->getRemark() + "~" +
-                    std::to_string(editOrder->getLoginCreate()) + "~" +
-                    std::to_string(editOrder->getLoginEdit()) + "~" +
-                    std::to_string(editOrder->getLoginAvailability()) + "~" +
-                    editOrder->getDateTimeCreate().toString("dd.MM.yyyy hh:mm").toStdString() + "~" +
-                    editOrder->getDateTimeEdit().toString("dd.MM.yyyy hh:mm").toStdString() + "~" +
-                    editOrder->getDateTimeAvailability().toString("dd.MM.yyyy hh:mm").toStdString() + "~" +
+                    std::to_string(editOrder.getId()) + "~" +
+                    editOrder.getDate().toString("dd.MM.yyyy").toStdString() + "~" +
+                    std::to_string(editOrder.getClient().getId()) + "~" +
+                    editOrder.getAmount() + "~" +
+                    editOrder.getPayment() + "~" +
+                    std::to_string(editOrder.getManager().getId()) + "~" +
+                    std::to_string(editOrder.getDesigner().getId()) + "~" +
+                    editOrder.getAvailability() + "~" +
+                    editOrder.getRemark() + "~" +
+                    std::to_string(editOrder.getLoginCreate()) + "~" +
+                    std::to_string(editOrder.getLoginEdit()) + "~" +
+                    std::to_string(editOrder.getLoginAvailability()) + "~" +
+                    editOrder.getDateTimeCreate().toString("dd.MM.yyyy hh:mm").toStdString() + "~" +
+                    editOrder.getDateTimeEdit().toString("dd.MM.yyyy hh:mm").toStdString() + "~" +
+                    editOrder.getDateTimeAvailability().toString("dd.MM.yyyy hh:mm").toStdString() + "~" +
                     "\r\n");
             }
         }
         newFile.close();
     }
+    delete ordersList;
 
     file.remove();
     newFile.rename(DataBase::getTableOrders());
@@ -733,11 +761,14 @@ void DataBase::editOrder(Order *editOrder) {
     std::vector<OrderPosition>* positionsList = new std::vector<OrderPosition>(DataBase::getAllPositions());
     QFile newFilePositions("temp2.txt");
     QFile filePositions(DataBase::getTableOrderPositions());
-    if (newFilePositions.open(QIODevice::WriteOnly)) {
+    if (newFilePositions.open(QIODevice::WriteOnly)) 
+    {
         QTextStream stream(&newFilePositions);
 
-        for (int i = 0; i < positionsList->size(); i++) {
-            if (editOrder->getId() != (*positionsList)[i].getIdOrder()) {
+        for (int i = 0; i < positionsList->size(); ++i)
+        {
+            if (editOrder.getId() != (*positionsList)[i].getIdOrder()) 
+            {
                 stream << QString::fromStdString(
                     std::to_string((*positionsList)[i].getIdPosition()) + "~" +
                     std::to_string((*positionsList)[i].getIdOrder()) + "~" +
@@ -749,75 +780,80 @@ void DataBase::editOrder(Order *editOrder) {
         }
         newFilePositions.close();
 
-        if (stream.status() != QTextStream::Ok) {
+        if (stream.status() != QTextStream::Ok) 
+        {
             //qDebug() << "Ошибка записи файла";
         }
     }
+    delete positionsList;
 
-    if (newFilePositions.open(QIODevice::Append)) {
+    if (newFilePositions.open(QIODevice::Append)) 
+    {
         QTextStream stream(&newFilePositions);
-        for (int i = 0; i < editOrder->getPositionsList().size(); i++) {
+        for (int i = 0; i < editOrder.getPositionsList().size(); ++i)
+        {
             stream << QString::fromStdString(
-                std::to_string(editOrder->getPositionsList()[i].getIdPosition()) + "~" +
-                std::to_string(editOrder->getId()) + "~" +
-                editOrder->getPositionsList()[i].getDescription() + "~" +
-                editOrder->getPositionsList()[i].getIssue() + "~" +
-                editOrder->getPositionsList()[i].getQuantity() + "~" +
+                std::to_string(editOrder.getPositionsList()[i].getIdPosition()) + "~" +
+                std::to_string(editOrder.getId()) + "~" +
+                editOrder.getPositionsList()[i].getDescription() + "~" +
+                editOrder.getPositionsList()[i].getIssue() + "~" +
+                editOrder.getPositionsList()[i].getQuantity() + "~" +
                 "\r\n");
         }
     }
 
     filePositions.remove();
     newFilePositions.rename(DataBase::getTableOrderPositions());
-
-    delete ordersList;
-    delete positionsList;
-    delete editOrder;
 }
 
-void DataBase::setAvailabilityOrder(int orderId, int loginEditId) {
+void DataBase::setAvailabilityOrder(int orderId, int loginEditId) 
+{
     //устанавливаем "готово/в работе" заказа
 
-    Order* order = new Order(DataBase::getOrder(orderId));
+    Order order(DataBase::getOrder(orderId));
     QDateTime currDateTime = QDateTime::currentDateTime();
 
-    if (order->getAvailability() == "в работе") {
-        order->setAvailability("готово");
+    if (order.getAvailability() == "в работе") 
+    {
+        order.setAvailability("готово");
     }
-    else {
-        order->setAvailability("в работе");
+    else 
+    {
+        order.setAvailability("в работе");
     }
-    order->setLoginAvailability(loginEditId);
-    order->setDateTimeAvailability(currDateTime);
+    order.setLoginAvailability(loginEditId);
+    order.setDateTimeAvailability(currDateTime);
 
     DataBase::editOrder(order);
 }
 
-void DataBase::addLogin(StaffLogin *login) {
+void DataBase::addLogin(const StaffLogin& login) 
+{
     //сохраняем логин в БД
 
     QFile file(DataBase::getTableLogins());
-    if (file.open(QIODevice::Append)) {
+    if (file.open(QIODevice::Append)) 
+    {
         QTextStream stream(&file);
 
         stream << QString::fromStdString(std::to_string(
-            login->getId()) + "~" + 
-            login->getName() + "~" + 
-            login->getPosition() + "~" + 
-            login->getLogin() + "~" + 
-            login->getPassword() + 
+            login.getId()) + "~" + 
+            login.getName() + "~" + 
+            login.getPosition() + "~" + 
+            login.getLogin() + "~" + 
+            login.getPassword() + 
             "\r\n");
         file.close();
 
-        if (stream.status() != QTextStream::Ok) {
+        if (stream.status() != QTextStream::Ok) 
+        {
             //qDebug() << "Ошибка записи файла";
         }
     }
-
-    delete login;
 }
 
-StaffLogin DataBase::getLogin(int loginId) {
+StaffLogin DataBase::getLogin(int loginId) 
+{
     //получаем логин из БД
     StaffLogin login;
     QFile file(DataBase::getTableLogins());
@@ -834,7 +870,8 @@ StaffLogin DataBase::getLogin(int loginId) {
             for (size_t p = 0, q = 0; p != s.npos; p = q)
                 tokens.push_back(s.substr(p + (p != 0), (q = s.find(sep, p + 1)) - p - (p != 0)));
 
-            if (std::stoi(tokens[0]) == loginId) {
+            if (std::stoi(tokens[0]) == loginId) 
+            {
                 login.setId(tokens[0]);
                 login.setName(tokens[1]);
                 login.setPosition(tokens[2]);
@@ -852,7 +889,8 @@ StaffLogin DataBase::getLogin(int loginId) {
     return login;
 }
 
-std::vector<StaffLogin> DataBase::getLoginsList() {
+std::vector<StaffLogin> DataBase::getLoginsList() 
+{
     std::vector<StaffLogin> loginsList;
     QFile file(DataBase::getTableLogins());
     char sep = '~';

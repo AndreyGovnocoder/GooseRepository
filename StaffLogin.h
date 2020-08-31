@@ -3,18 +3,17 @@
 #include <string>
 #include <qstring.h>
 
-class StaffLogin : public Staff {
+class StaffLogin : public Staff 
+{
 private:
-	std::string login;
-	std::string password;
+	std::string _login;
+	std::string _password;
 
 public:
-	StaffLogin();
-	~StaffLogin();
-	void setLogin(std::string);
-	void setPassword(std::string);
-	std::string getLogin();
-	std::string getPassword();
-	QString getQLogin();
-	QString getQPassword();
+	StaffLogin() = default;
+	~StaffLogin() = default;
+	void setLogin(const std::string& login) { _login = login; };
+	void setPassword(const std::string& password) { _password = password; };
+	const std::string& getLogin() const { return _login; };
+	const std::string& getPassword() const { return _password; };
 };

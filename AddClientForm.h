@@ -7,10 +7,11 @@ class AddClientForm : public QWidget, public Ui::AddClientForm
 {
 	Q_OBJECT
 
+private slots:
+	void addClientToDBSlot();
+
 public:
 	AddClientForm(QWidget *parent = Q_NULLPTR);
-	~AddClientForm();
+	~AddClientForm() = default;
 
-private slots:
-	void slot1();
 };

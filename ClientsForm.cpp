@@ -10,44 +10,58 @@ ClientsForm::ClientsForm(QWidget *parent)
 	setClients(DataBase::getClientsList());
 }
 
-ClientsForm::~ClientsForm(){}
-
-
-void ClientsForm::slot1() {
+void ClientsForm::removeClientSlot() 
+{
     // удаление данных клиента
 
-    DataBase::removeClient(getCurrentId());
-    setClients(DataBase::getClientsList());
+    if(getCurrentId() != -1)
+    {
+        DataBase::removeClient(getCurrentId());
+        setClients(DataBase::getClientsList());
+    }        
 }
 
-void ClientsForm::slot2() {
+void ClientsForm::editClientSlot() 
+{
     // редактирование данных клиента
 
-    int id = getCurrentId();
-    std::string name;
-    std::string phone;
-    std::string mail;
-    EditClientDialog editDialog(id, this);
+    if (getCurrentId() != -1)
+    {
+        int currId = getCurrentId();
+        std::string name;
+        std::string phone;
+        std::string mail;
 
-    if (editDialog.exec()) {
-        name = editDialog.nameLineEdit->text().toStdString();
-        phone = editDialog.phoneLineEdit->text().toStdString();
-        mail = editDialog.mailLineEdit->text().toStdString();
-        Client client(id, name, phone, mail);
-        DataBase::editClient(client);
+        EditClientDialog editDialog(this);
+        Client client(DataBase::getClient(currId));
+        editDialog.nameLineEdit->setText(QString::fromStdString(client.getName()));
+        editDialog.phoneLineEdit->setText(QString::fromStdString(client.getPhone()));
+        editDialog.mailLineEdit->setText(QString::fromStdString(client.getMail()));
 
-        setClients(DataBase::getClientsList());
-    }
+        if (editDialog.exec())
+        {
+            name = editDialog.nameLineEdit->text().toStdString();
+            phone = editDialog.phoneLineEdit->text().toStdString();
+            mail = editDialog.mailLineEdit->text().toStdString();
+
+            DataBase::editClient(Client(currId, name, phone, mail));
+
+            setClients(DataBase::getClientsList());
+        }
+    }    
 }
 
-void ClientsForm::setClients(std::vector<Client> clientsList) {
+void ClientsForm::setClients(const std::vector<Client>& clientsList) 
+{
     // заполняем таблицу данными
 
     clientsTableWidget->clearContents();
     clientsTableWidget->setRowCount(0);
 
-    if (!clientsList.empty()) {
-        for (int i = 0; i < clientsList.size(); i++) {
+    if (!clientsList.empty())
+    {
+        for (int i = 0; i < clientsList.size(); ++i)
+        {
             clientsTableWidget->insertRow(i);
             clientsTableWidget->setItem(i, 0, new QTableWidgetItem(QString::fromStdString(std::to_string(clientsList[i].getId()))));
             clientsTableWidget->setItem(i, 1, new QTableWidgetItem(QString::fromStdString(clientsList[i].getName())));
@@ -65,8 +79,10 @@ void ClientsForm::setClients(std::vector<Client> clientsList) {
         clientsTableWidget->setHorizontalScrollMode(QAbstractItemView::ScrollMode::ScrollPerPixel);
         clientsTableWidget->setVerticalScrollMode(QAbstractItemView::ScrollMode::ScrollPerPixel);
     }
-    else {
-        for (int i = 0; i <= 3; i++) {
+    else 
+    {
+        for (int i = 0; i <= 3; ++i)
+        {
             clientsTableWidget->hideColumn(i);
         }
 
@@ -77,13 +93,15 @@ void ClientsForm::setClients(std::vector<Client> clientsList) {
     }
 }
 
-int ClientsForm::getCurrentId() {
+int ClientsForm::getCurrentId() 
+{
     //получаем id выделенного в списке клиента
 
     int row;
-    int id = 0;
+    int id = -1;
 
-    if (clientsTableWidget->currentItem() != NULL) {
+    if (clientsTableWidget->currentItem() != NULL)
+    {
         row = clientsTableWidget->currentItem()->row();
         id = clientsTableWidget->item(row, 0)->text().toInt();
     }

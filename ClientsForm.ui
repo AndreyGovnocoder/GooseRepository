@@ -130,7 +130,7 @@
    <sender>deleteBtn</sender>
    <signal>clicked()</signal>
    <receiver>ClientsForm</receiver>
-   <slot>slot1()</slot>
+   <slot>removeClientSlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>96</x>
@@ -146,7 +146,7 @@
    <sender>editBtn</sender>
    <signal>clicked()</signal>
    <receiver>ClientsForm</receiver>
-   <slot>slot2()</slot>
+   <slot>editClientSlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>95</x>
@@ -176,7 +176,7 @@
   </connection>
  </connections>
  <slots>
-  <slot>slot1()</slot>
-  <slot>slot2()</slot>
+  <slot>removeClientSlot()</slot>
+  <slot>editClientSlot()</slot>
  </slots>
 </ui>

@@ -9,42 +9,44 @@ CreateLoginForm::CreateLoginForm(QWidget *parent)
 	setupUi(this);
 }
 
-CreateLoginForm::~CreateLoginForm(){}
-
-void CreateLoginForm::slot1() {
+void CreateLoginForm::addLoginToDBSlot() 
+{
 	//сохраняем логин в БД
 
-	StaffLogin* login = new StaffLogin();
+	StaffLogin login;
 
 	int newId;
 	newId = DataBase::getLastId(DataBase::getTableLogins());
-	newId++;
+	++newId;
 
-	login->setId(newId);
-	login->setName(nameLineEdit->text().toStdString());
-	login->setPosition(positionLineEdit->text().toStdString());
-	login->setLogin(loginLineEdit->text().toStdString());
-	login->setPassword(passwordLineEdit->text().toStdString());
+	login.setId(newId);
+	login.setName(nameLineEdit->text().toStdString());
+	login.setPosition(positionLineEdit->text().toStdString());
+	login.setLogin(loginLineEdit->text().toStdString());
+	login.setPassword(passwordLineEdit->text().toStdString());
 	
-	std::vector<StaffLogin>* loginsList = new std::vector<StaffLogin>(DataBase::getLoginsList());
+	std::vector<StaffLogin> loginsList(DataBase::getLoginsList());
 
-	if (!loginsList->empty()) {
-		for (int i = 0; i < loginsList->size(); i++) {
-			if (login->getLogin() == (*loginsList)[i].getLogin()) {
+	if (!loginsList.empty()) 
+	{
+		for (int i = 0; i < loginsList.size(); ++i)
+		{
+			if (login.getLogin() == loginsList[i].getLogin()) 
+			{
 				QMessageBox::warning(this, "Ошибка", "Такой логин уже существует");
 				break;
 			}
 
-			if (i == (loginsList->size() - 1)) {
+			if (i == (loginsList.size() - 1)) 
+			{
 				DataBase::addLogin(login);
-				QWidget::close();
-				delete loginsList;
+				close();
 			}
 		}
 	}
-	else {
+	else 
+	{
 		DataBase::addLogin(login);
-		QWidget::close();
-		delete loginsList;
+		close();
 	}	
 }

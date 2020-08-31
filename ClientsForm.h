@@ -8,15 +8,16 @@ class ClientsForm : public QWidget, public Ui::ClientsForm
 {
 	Q_OBJECT
 
-public:
-	ClientsForm(QWidget *parent = Q_NULLPTR);
-	~ClientsForm();
-	void setClients(std::vector<Client>);
-
-private slots:
-	void slot1();
-	void slot2();
-
 private:
 	int getCurrentId();
+
+private slots:
+	void removeClientSlot();
+	void editClientSlot();
+
+public:
+	ClientsForm(QWidget *parent = Q_NULLPTR);
+	~ClientsForm() = default;
+	void setClients(const std::vector<Client>&);
+
 };

@@ -9,30 +9,9 @@ class MainForm : public QMainWindow
 {
     Q_OBJECT
 
-public:
-    MainForm(QWidget *parent = Q_NULLPTR);
-    static void setOrdersTableWidget(QTableWidget*, std::vector<Order>*);
-    static void clearPositionsTableWidget(QTableWidget*);
-    void setTransparentClientCard();
-    void setLogin(StaffLogin);
-    StaffLogin getLogin();
-
-private slots:
-    void slot1();
-    void slot2();
-    void slot3();
-    void slot4();
-    void slot5();
-    void slot6();
-    void slot7();
-    void slot8();
-    void slot9();
-    void slotCustomMenuRequested(QPoint);
-    void slotSetAvailability();
-
 private:
     Ui::MainFormClass ui;
-    StaffLogin login;
+    StaffLogin _login;
     void setPositionsTableWidget(int);
     void setClientCard(int);
     void setRemark(int);
@@ -40,4 +19,26 @@ private:
     void clearRemark();
     void setChangesOrderCard(int);
     void clearChangesOrderCard();
+
+private slots:
+    void addClientSlot();
+    void clientListSlot();
+    void staffListSlot();
+    void createOrderSlot();
+    void printOrderSlot();
+    void editOrderSlot();
+    void removeOrderSlot();
+    void clickOnRowSlot();
+    void searchOnClientSlot();
+    void slotCustomMenuRequested(const QPoint&);
+    void slotSetAvailability();
+
+public:
+    MainForm(QWidget *parent = Q_NULLPTR);
+    ~MainForm() = default;
+    void setOrdersTableWidget(const std::vector<Order>&);
+    void clearPositionsTableWidget();
+    void setTransparentClientCard();
+    void setLogin(const StaffLogin& login) { _login = login; };
+    const StaffLogin& getLogin() const { return _login; };
 };

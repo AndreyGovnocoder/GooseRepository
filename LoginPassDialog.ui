@@ -166,7 +166,7 @@
    <sender>createLoginBtn</sender>
    <signal>clicked()</signal>
    <receiver>LoginPassDialog</receiver>
-   <slot>slot1()</slot>
+   <slot>createLoginSlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>147</x>
@@ -182,7 +182,7 @@
    <sender>okBtn</sender>
    <signal>clicked()</signal>
    <receiver>LoginPassDialog</receiver>
-   <slot>slot2()</slot>
+   <slot>checkLoginPassSlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>47</x>
@@ -196,7 +196,7 @@
   </connection>
  </connections>
  <slots>
-  <slot>slot1()</slot>
-  <slot>slot2()</slot>
+  <slot>createLoginSlot()</slot>
+  <slot>checkLoginPassSlot()</slot>
  </slots>
 </ui>

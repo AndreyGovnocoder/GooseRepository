@@ -6,21 +6,9 @@ AddStaffForm::AddStaffForm(QWidget *parent)
 	setupUi(this);
 }
 
-AddStaffForm::AddStaffForm(std::string position, QWidget* parent)
+AddStaffForm::AddStaffForm(const std::string& position, QWidget* parent)
 	: QDialog(parent)
 {
-	AddStaffForm::setPosition(position);
+	setPosition(position);
 	setupUi(this);
-}
-
-AddStaffForm::~AddStaffForm()
-{
-}
-
-void AddStaffForm::setPosition(std::string position) {
-	AddStaffForm::position = position;
-}
-
-std::string AddStaffForm::getPosition() {
-	return AddStaffForm::position;
 }

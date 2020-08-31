@@ -171,7 +171,7 @@
    <sender>closeBtn</sender>
    <signal>clicked()</signal>
    <receiver>AddClientForm</receiver>
-   <slot>close()</slot>
+   <slot>deleteLater()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>331</x>
@@ -187,7 +187,7 @@
    <sender>addBtn</sender>
    <signal>clicked()</signal>
    <receiver>AddClientForm</receiver>
-   <slot>slot1()</slot>
+   <slot>addClientToDBSlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>79</x>
@@ -201,8 +201,6 @@
   </connection>
  </connections>
  <slots>
-  <slot>slot1()</slot>
-  <slot>slot2()</slot>
-  <slot>slot3()</slot>
+  <slot>addClientToDBSlot()</slot>
  </slots>
 </ui>

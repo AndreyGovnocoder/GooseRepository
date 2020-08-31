@@ -2,25 +2,24 @@
 #include <string>
 #include <qstring.h>
 
-class Staff {
+class Staff 
+{
 private:
-	int id;
-	std::string name;
-	std::string position;
+	int _id;
+	std::string _name;
+	std::string _position;
 
 public:
-	Staff(int, std::string, std::string);
-	Staff(std::string, std::string, std::string);
+	Staff(int, const std::string&, const std::string&);
+	Staff(const std::string&, const std::string&, const std::string&);
 	Staff(int);
-	Staff();
-	~Staff();
-	void setId(int);
-	void setId(std::string);
-	int getId();
-	void setName(std::string);
-	std::string getName();
-	QString getQName();
-	void setPosition(std::string);
-	std::string getPosition();
-	QString getQPosition();
+	Staff() = default;
+	~Staff() = default;
+	void setId(const int staffId) { _id = staffId; };
+	void setId(const std::string& staffId) { _id = std::stoi(staffId); };
+	int getId() const { return _id; };
+	void setName(const std::string& staffName) { _name = staffName; };
+	const std::string& getName() const { return _name; };
+	void setPosition(const std::string& staffPosition) { _position = staffPosition; };
+	const std::string& getPosition() const { return _position; };
 };

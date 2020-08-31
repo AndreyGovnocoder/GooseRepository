@@ -187,7 +187,7 @@
    <sender>managersListWidget</sender>
    <signal>itemClicked(QListWidgetItem*)</signal>
    <receiver>StaffsForm</receiver>
-   <slot>slot5()</slot>
+   <slot>clickOnManagerSlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>126</x>
@@ -203,7 +203,7 @@
    <sender>designersListWidget</sender>
    <signal>itemClicked(QListWidgetItem*)</signal>
    <receiver>StaffsForm</receiver>
-   <slot>slot6()</slot>
+   <slot>clickOnDesignerSlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>288</x>
@@ -219,7 +219,7 @@
    <sender>addManagerBtn</sender>
    <signal>clicked()</signal>
    <receiver>StaffsForm</receiver>
-   <slot>slot1()</slot>
+   <slot>addManagerSlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>83</x>
@@ -235,7 +235,7 @@
    <sender>addDesignerBtn</sender>
    <signal>clicked()</signal>
    <receiver>StaffsForm</receiver>
-   <slot>slot4()</slot>
+   <slot>addDesignerSlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>353</x>
@@ -251,7 +251,7 @@
    <sender>editBtn</sender>
    <signal>clicked()</signal>
    <receiver>StaffsForm</receiver>
-   <slot>slot2()</slot>
+   <slot>editStaffSlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>80</x>
@@ -267,7 +267,7 @@
    <sender>deleteBtn</sender>
    <signal>clicked()</signal>
    <receiver>StaffsForm</receiver>
-   <slot>slot3()</slot>
+   <slot>removeStaffSlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>356</x>
@@ -297,11 +297,11 @@
   </connection>
  </connections>
  <slots>
-  <slot>slot1()</slot>
-  <slot>slot2()</slot>
-  <slot>slot3()</slot>
-  <slot>slot4()</slot>
-  <slot>slot5()</slot>
-  <slot>slot6()</slot>
+  <slot>addManagerSlot()</slot>
+  <slot>editStaffSlot()</slot>
+  <slot>removeStaffSlot()</slot>
+  <slot>addDesignerSlot()</slot>
+  <slot>clickOnManagerSlot()</slot>
+  <slot>clickOnDesignerSlot()</slot>
  </slots>
 </ui>

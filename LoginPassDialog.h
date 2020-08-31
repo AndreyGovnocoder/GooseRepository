@@ -8,16 +8,17 @@ class LoginPassDialog : public QDialog, public Ui::LoginPassDialog
 {
 	Q_OBJECT
 
-public:
-	LoginPassDialog(QWidget *parent = Q_NULLPTR);
-	~LoginPassDialog();
-	void setLogin(StaffLogin);
-	StaffLogin getLogin();
+private:
+	StaffLogin _login;
 
 private slots:
-	void slot1();
-	void slot2();
+	void createLoginSlot();
+	void checkLoginPassSlot();
 
-private:
-	StaffLogin login;
+public:
+	LoginPassDialog(QWidget *parent = Q_NULLPTR);
+	~LoginPassDialog() = default;
+	void setLogin(const StaffLogin&);
+	const StaffLogin& getLogin() const { return _login; };
+
 };

@@ -7,10 +7,10 @@ class CreateLoginForm : public QWidget, public Ui::CreateLoginForm
 {
 	Q_OBJECT
 
+private slots:
+	void addLoginToDBSlot();
+
 public:
 	CreateLoginForm(QWidget *parent = Q_NULLPTR);
-	~CreateLoginForm();
-
-private slots:
-	void slot1();
+	~CreateLoginForm() = default;
 };
