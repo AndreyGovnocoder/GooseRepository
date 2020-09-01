@@ -5,7 +5,3 @@ EditStaffDialog::EditStaffDialog(QWidget *parent)
 {
 	setupUi(this);
 }
-
-EditStaffDialog::~EditStaffDialog()
-{
-}

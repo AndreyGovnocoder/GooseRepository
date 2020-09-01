@@ -26,9 +26,9 @@ void StaffsForm::addManagerSlot()
 		Staff newStaff;
 		newStaff.setPosition("менеджер");
 		newStaff.setName(addStaffDialog->nameLineEdit->text().toStdString());
-		int newId = DataBase::getLastId(DataBase::getTableStaff());
+		/*int newId = DataBase::getLastId(DataBase::getTableStaff());
 		++newId;
-		newStaff.setId(newId);
+		newStaff.setId(newId);*/
 		DataBase::addStaff(newStaff);
 		setStaffList();
 	}
@@ -47,9 +47,9 @@ void StaffsForm::addDesignerSlot()
 		Staff newStaff;
 		newStaff.setPosition("дизайнер");
 		newStaff.setName(addStaffDialog->nameLineEdit->text().toStdString());
-		int newId = DataBase::getLastId(DataBase::getTableStaff());
+		/*int newId = DataBase::getLastId(DataBase::getTableStaff());
 		++newId;
-		newStaff.setId(newId);
+		newStaff.setId(newId);*/
 		DataBase::addStaff(newStaff);
 		setStaffList();
 	}
@@ -141,7 +141,7 @@ void StaffsForm::clickOnManagerSlot()
 	editBtn->setEnabled(true);
 	deleteBtn->setEnabled(true);
 	designersListWidget->clearSelection();
-	int staffId = managersListWidget->currentItem()->data(Qt::UserRole).toInt();
+	const int staffId = managersListWidget->currentItem()->data(Qt::UserRole).toInt();
 	setSelectedStaffId(staffId);
 }
 
@@ -152,7 +152,7 @@ void StaffsForm::clickOnDesignerSlot()
 	editBtn->setEnabled(true);
 	deleteBtn->setEnabled(true);
 	managersListWidget->clearSelection();
-	int staffId = designersListWidget->currentItem()->data(Qt::UserRole).toInt();
+	const int staffId = designersListWidget->currentItem()->data(Qt::UserRole).toInt();
 	setSelectedStaffId(staffId);
 }
 

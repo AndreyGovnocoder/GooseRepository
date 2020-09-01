@@ -13,12 +13,11 @@ private:
 
 public:
 	Client(int, const std::string&, const std::string&, const std::string&);
-	Client(const std::string&, const std::string&, const std::string&, const std::string&);
+	Client(const std::string&, const std::string&, const std::string&);
 	Client() = default;
 	~Client() = default;
 
 	void setId(int id) { _id = id; };
-	void setId(const std::string& clientId) { _id = std::stoi(clientId); };
 	int getId() const { return _id; };
 	void setName(const std::string& clientName) { _name = clientName; };
 	const std::string& getName() const { return _name; };

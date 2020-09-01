@@ -6,10 +6,10 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     
-    LoginPassDialog* loginDialog = new LoginPassDialog();
+    LoginPassDialog loginDialog;
     bool launchApp = false;
 
-    if (loginDialog->exec()) 
+    if (loginDialog.exec()) 
     {
         launchApp = true;
     }
@@ -22,9 +22,8 @@ int main(int argc, char *argv[])
     if (launchApp)
     {
         MainForm mainForm;
-        mainForm.setLogin(loginDialog->getLogin());
-        mainForm.setWindowTitle(mainForm.windowTitle() + "  Учетная запись: " + QString::fromStdString(loginDialog->getLogin().getPosition()) + " " + QString::fromStdString(loginDialog->getLogin().getName()));
-        delete loginDialog;
+        mainForm.setLogin(loginDialog.getLogin());
+        mainForm.setWindowTitle(mainForm.windowTitle() + "  Учетная запись: " + QString::fromStdString(loginDialog.getLogin().getPosition()) + " " + QString::fromStdString(loginDialog.getLogin().getName()));
         mainForm.show();
         return a.exec();
     }

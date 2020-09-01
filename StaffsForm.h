@@ -24,5 +24,5 @@ public:
 	~StaffsForm() = default;
 	void setStaffList();
 	void setSelectedStaffId(int selectedStaffId) { _staffId = selectedStaffId; };
-	int getSelectedStaffId() { return _staffId; };
+	const int getSelectedStaffId() const { return _staffId; };
 };

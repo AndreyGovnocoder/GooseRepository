@@ -11,10 +11,8 @@ AddClientForm::AddClientForm(QWidget *parent)
 void AddClientForm::addClientToDBSlot() 
 {
 	//получаем из формы данные клиента
-	int newId = DataBase::getLastId(DataBase::getTableClients());
-	++newId;
 
-	Client client(newId, nameLineEdit->text().toStdString(), phoneLineEdit->text().toStdString(), mailLineEdit->text().toStdString());
+	Client client(nameLineEdit->text().toStdString(), phoneLineEdit->text().toStdString(), mailLineEdit->text().toStdString());
 	DataBase::addClient(client);
 	close();
 }

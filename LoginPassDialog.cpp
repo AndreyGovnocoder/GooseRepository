@@ -59,15 +59,6 @@ void LoginPassDialog::checkLoginPassSlot()
 
 void LoginPassDialog::setLogin(const StaffLogin& login) 
 {
-	_login.setId(login.getId());
-	_login.setName(login.getName());
-	_login.setPosition(login.getPosition());
-	_login.setLogin(login.getLogin());
-	_login.setPassword(login.getPassword());
-
-	/*
-	или все таки лучше будет так? - 
-	_login = login;
-	*/
+	_login = login;	
 }
 

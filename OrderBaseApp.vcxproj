@@ -48,13 +48,15 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
     <QtInstall>msvc2019_64</QtInstall>
-    <QtModules>core;gui;widgets</QtModules>
+    <QtModules>core;gui;sql;widgets</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
+    <QtQMLDebugEnable>true</QtQMLDebugEnable>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
     <QtInstall>msvc2019_64</QtInstall>
-    <QtModules>core;gui;widgets</QtModules>
+    <QtModules>core;gui;sql;widgets</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
+    <QtQMLDebugEnable>true</QtQMLDebugEnable>
   </PropertyGroup>
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
     <Import Project="$(QtMsBuild)\qt.props" />
@@ -99,6 +101,7 @@
     <QtUic Include="AddClientForm.ui" />
     <QtUic Include="AddStaffForm.ui" />
     <QtUic Include="ClientsForm.ui" />
+    <QtUic Include="CreateLoginForm.ui" />
     <QtUic Include="CreateOrderDialog.ui" />
     <QtUic Include="CreateOrderForm.ui" />
     <QtUic Include="EditClientDialog.ui" />
@@ -115,6 +118,7 @@
   <ItemGroup>
     <QtMoc Include="LoginPassDialog.h" />
     <QtMoc Include="CreateOrderDialog.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="StaffLogin.h" />
     <QtMoc Include="StaffsForm.h" />
     <QtMoc Include="AddClientForm.h" />
@@ -132,6 +136,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="OrderBaseApp.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
