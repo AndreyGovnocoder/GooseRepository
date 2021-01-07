@@ -62,13 +62,13 @@
     <ClCompile Include="StaffsForm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CreateLoginForm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="LoginPassDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CreateOrderDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CreateAccountForm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -88,10 +88,10 @@
     <ClInclude Include="DataBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="StaffLogin.h">
+    <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
+    <ClInclude Include="StaffAccount.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -117,13 +117,13 @@
     <QtMoc Include="SetDateDialog.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="CreateLoginForm.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="LoginPassDialog.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="CreateOrderDialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="CreateAccountForm.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -152,13 +152,13 @@
     <QtUic Include="CreateOrderForm.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtUic Include="LoginPassDialog.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
     <QtUic Include="CreateOrderDialog.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtUic Include="CreateLoginForm.ui">
+    <QtUic Include="CreateAccountForm.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="LoginPassDialog.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

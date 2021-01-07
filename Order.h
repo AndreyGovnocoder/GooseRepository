@@ -19,15 +19,16 @@ private:
 	std::vector<OrderPosition> _positionsList;
 	std::string _availability;
 	std::string _remark;
-	int _loginCreate;
-	int _loginEdit;
-	int _loginAvailability;
+	int _accountCreate;
+	int _accountEdit;
+	int _accountAvailability;
 	QDateTime _dateTimeCreate;
 	QDateTime _dateTimeEdit;
 	QDateTime _dateTimeAvailability;
 
 public:
 	Order() = default;
+	Order(int id) { _id = id; };
 	~Order() = default;
 	void setId(int id) { _id = id; };
 	void setDate(const QDate& date) { _date = date; };
@@ -39,9 +40,9 @@ public:
 	void setPositionsList(const std::vector<OrderPosition> positionsList) { _positionsList = positionsList; };
 	void setAvailability(const std::string& availability) { _availability = availability; };
 	void setRemark(const std::string& remark) { _remark = remark; };
-	void setLoginCreate(const int loginCreate) { _loginCreate = loginCreate; };
-	void setLoginEdit(const int loginEdit) { _loginEdit = loginEdit; };
-	void setLoginAvailability(const int loginAvailability) { _loginAvailability = loginAvailability; };
+	void setAccountCreate(const int accountCreate) { _accountCreate = accountCreate; };
+	void setAccountEdit(const int accountEdit) { _accountEdit = accountEdit; };
+	void setAccountAvailability(const int accountAvailability) { _accountAvailability = accountAvailability; };
 	void setDateTimeCreate(const QDateTime& dateTimeCreate){ _dateTimeCreate = dateTimeCreate; };
 	void setDateTimeEdit(const QDateTime& dateTimeEdit) { _dateTimeEdit = dateTimeEdit; };
 	void setDateTimeAvailability(const QDateTime& dateTimeAvailability) { _dateTimeAvailability = dateTimeAvailability; };
@@ -55,9 +56,9 @@ public:
 	const std::vector<OrderPosition>& getPositionsList() const { return _positionsList; };
 	const std::string& getAvailability() const { return _availability; };
 	const std::string& getRemark() const { return _remark; };
-	int getLoginCreate() const { return _loginCreate; };
-	int getLoginEdit() const { return _loginEdit; };
-	int getLoginAvailability() const { return _loginAvailability; };
+	int getAccountCreate() const { return _accountCreate; };
+	int getAccountEdit() const { return _accountEdit; };
+	int getAccountAvailability() const { return _accountAvailability; };
 	const QDateTime& getDateTimeCreate() const { return _dateTimeCreate; };
 	const QDateTime& getDateTimeEdit() const { return _dateTimeEdit; };
 	const QDateTime& getDateTimeAvailability() const { return _dateTimeAvailability; };

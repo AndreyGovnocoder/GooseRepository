@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>LoginPassDialog</string>
   </property>
-  <widget class="QPushButton" name="createLoginBtn">
+  <widget class="QPushButton" name="createAccountBtn">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -163,22 +163,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>createLoginBtn</sender>
-   <signal>clicked()</signal>
-   <receiver>LoginPassDialog</receiver>
-   <slot>createLoginSlot()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>147</x>
-     <y>184</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>217</x>
-     <y>190</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>okBtn</sender>
    <signal>clicked()</signal>
    <receiver>LoginPassDialog</receiver>
@@ -194,9 +178,25 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>createAccountBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>LoginPassDialog</receiver>
+   <slot>createAccountSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>119</x>
+     <y>180</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>184</x>
+     <y>141</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
-  <slot>createLoginSlot()</slot>
   <slot>checkLoginPassSlot()</slot>
+  <slot>createAccountSlot()</slot>
  </slots>
 </ui>

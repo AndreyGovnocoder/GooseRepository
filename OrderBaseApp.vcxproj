@@ -47,7 +47,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
-    <QtInstall>msvc2019_64</QtInstall>
+    <QtInstall>Qt_5.15.0</QtInstall>
     <QtModules>core;gui;sql;widgets</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
     <QtQMLDebugEnable>true</QtQMLDebugEnable>
@@ -91,7 +91,7 @@
     <ClCompile Include="AddClientForm.cpp" />
     <ClCompile Include="AddStaffForm.cpp" />
     <ClCompile Include="ClientsForm.cpp" />
-    <ClCompile Include="CreateLoginForm.cpp" />
+    <ClCompile Include="CreateAccountForm.cpp" />
     <ClCompile Include="CreateOrderDialog.cpp" />
     <ClCompile Include="DataBase.cpp" />
     <ClCompile Include="LoginPassDialog.cpp" />
@@ -101,7 +101,7 @@
     <QtUic Include="AddClientForm.ui" />
     <QtUic Include="AddStaffForm.ui" />
     <QtUic Include="ClientsForm.ui" />
-    <QtUic Include="CreateLoginForm.ui" />
+    <QtUic Include="CreateAccountForm.ui" />
     <QtUic Include="CreateOrderDialog.ui" />
     <QtUic Include="CreateOrderForm.ui" />
     <QtUic Include="EditClientDialog.ui" />
@@ -119,13 +119,13 @@
     <QtMoc Include="LoginPassDialog.h" />
     <QtMoc Include="CreateOrderDialog.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="StaffLogin.h" />
+    <ClInclude Include="StaffAccount.h" />
     <QtMoc Include="StaffsForm.h" />
     <QtMoc Include="AddClientForm.h" />
     <QtMoc Include="AddStaffForm.h" />
     <ClInclude Include="Client.h" />
     <QtMoc Include="ClientsForm.h" />
-    <QtMoc Include="CreateLoginForm.h" />
+    <QtMoc Include="CreateAccountForm.h" />
     <ClInclude Include="DataBase.h" />
     <QtMoc Include="EditClientDialog.h" />
     <QtMoc Include="EditStaffDialog.h" />
