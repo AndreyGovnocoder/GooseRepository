@@ -48,7 +48,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
     <QtInstall>Qt_5.15.0</QtInstall>
-    <QtModules>core;gui;sql;widgets</QtModules>
+    <QtModules>core;gui;sql;widgets;printsupport;webview</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
     <QtQMLDebugEnable>true</QtQMLDebugEnable>
   </PropertyGroup>
@@ -88,22 +88,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AddClientForm.cpp" />
-    <ClCompile Include="AddStaffForm.cpp" />
-    <ClCompile Include="ClientsForm.cpp" />
+    <ClCompile Include="AddClientDialog.cpp" />
+    <ClCompile Include="AddStaffDialog.cpp" />
+    <ClCompile Include="ClientsFormDialog.cpp" />
     <ClCompile Include="CreateAccountForm.cpp" />
     <ClCompile Include="CreateOrderDialog.cpp" />
     <ClCompile Include="DataBase.cpp" />
     <ClCompile Include="LoginPassDialog.cpp" />
+    <ClCompile Include="PrintReceiptDialog.cpp" />
     <ClCompile Include="Staff.cpp" />
-    <ClCompile Include="StaffsForm.cpp" />
+    <ClCompile Include="StaffsFormDialog.cpp" />
+    <ClCompile Include="ToPrintForm.cpp" />
     <QtRcc Include="MainForm.qrc" />
-    <QtUic Include="AddClientForm.ui" />
-    <QtUic Include="AddStaffForm.ui" />
-    <QtUic Include="ClientsForm.ui" />
+    <QtUic Include="AddClientDialog.ui" />
+    <QtUic Include="AddStaffDialog.ui" />
+    <QtUic Include="ClientsFormDialog.ui" />
     <QtUic Include="CreateAccountForm.ui" />
     <QtUic Include="CreateOrderDialog.ui" />
-    <QtUic Include="CreateOrderForm.ui" />
     <QtUic Include="EditClientDialog.ui" />
     <QtUic Include="EditStaffDialog.ui" />
     <QtUic Include="LoginPassDialog.ui" />
@@ -112,19 +113,23 @@
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="MainForm.cpp" />
     <ClCompile Include="main.cpp" />
+    <QtUic Include="PrintReceiptDialog.ui" />
     <QtUic Include="SetDateDialog.ui" />
-    <QtUic Include="StaffsForm.ui" />
+    <QtUic Include="StaffsFormDialog.ui" />
+    <QtUic Include="ToPrintForm.ui" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="ToPrintForm.h" />
+    <QtMoc Include="StaffsFormDialog.h" />
     <QtMoc Include="LoginPassDialog.h" />
     <QtMoc Include="CreateOrderDialog.h" />
+    <QtMoc Include="ClientsFormDialog.h" />
+    <QtMoc Include="AddClientDialog.h" />
+    <QtMoc Include="AddStaffDialog.h" />
+    <QtMoc Include="PrintReceiptDialog.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="StaffAccount.h" />
-    <QtMoc Include="StaffsForm.h" />
-    <QtMoc Include="AddClientForm.h" />
-    <QtMoc Include="AddStaffForm.h" />
     <ClInclude Include="Client.h" />
-    <QtMoc Include="ClientsForm.h" />
     <QtMoc Include="CreateAccountForm.h" />
     <ClInclude Include="DataBase.h" />
     <QtMoc Include="EditClientDialog.h" />
@@ -133,9 +138,6 @@
     <ClInclude Include="OrderPosition.h" />
     <QtMoc Include="SetDateDialog.h" />
     <ClInclude Include="Staff.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OrderBaseApp.rc" />

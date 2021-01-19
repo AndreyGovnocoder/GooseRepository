@@ -5,15 +5,9 @@
 
 class Client 
 {
-private:
-	int _id;
-	std::string _name;
-	std::string _phone;
-	std::string _mail;
-
 public:
-	Client(int, const std::string&, const std::string&, const std::string&);
-	Client(const std::string&, const std::string&, const std::string&);
+	Client(int, const std::string&, const std::string&, const std::string&, const bool);
+	Client(const std::string&, const std::string&, const std::string&, const bool);
 	Client() = default;
 	~Client() = default;
 
@@ -25,4 +19,13 @@ public:
 	const std::string& getPhone() const { return _phone; };
 	void setMail(const std::string& clientMail) { _mail = clientMail; };
 	const std::string& getMail() const { return _mail; };
+	void setActive(bool active) { _active = active; }
+	bool isActive() const { return _active; }
+
+private:
+	int _id;
+	std::string _name;
+	std::string _phone;
+	std::string _mail;
+	bool _active;
 };

@@ -8,24 +8,6 @@
 
 class Order
 {
-private:
-	int _id;
-	QDate _date;
-	int _clientId;
-	std::string _payment;
-	std::string _amount;
-	int _managerId;
-	int _designerId;
-	std::vector<OrderPosition> _positionsList;
-	std::string _availability;
-	std::string _remark;
-	int _accountCreate;
-	int _accountEdit;
-	int _accountAvailability;
-	QDateTime _dateTimeCreate;
-	QDateTime _dateTimeEdit;
-	QDateTime _dateTimeAvailability;
-
 public:
 	Order() = default;
 	Order(int id) { _id = id; };
@@ -62,4 +44,22 @@ public:
 	const QDateTime& getDateTimeCreate() const { return _dateTimeCreate; };
 	const QDateTime& getDateTimeEdit() const { return _dateTimeEdit; };
 	const QDateTime& getDateTimeAvailability() const { return _dateTimeAvailability; };
+
+private:
+	int _id;
+	QDate _date;
+	int _clientId;
+	std::string _payment;
+	std::string _amount;
+	int _managerId;
+	int _designerId;
+	std::vector<OrderPosition> _positionsList;
+	std::string _availability;
+	std::string _remark;
+	int _accountCreate;
+	int _accountEdit;
+	int _accountAvailability;
+	QDateTime _dateTimeCreate;
+	QDateTime _dateTimeEdit;
+	QDateTime _dateTimeAvailability;
 };

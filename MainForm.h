@@ -6,47 +6,18 @@
 #include "StaffAccount.h"
 #include "DataBase.h"
 #include <QtWidgets\qmessagebox.h>
-#include "StaffsForm.h"
-#include "AddClientForm.h"
-#include "ClientsForm.h"
+#include "StaffsFormDialog.h"
 #include "LoginPassDialog.h"
 #include "CreateOrderDialog.h"
+#include "ClientsFormDialog.h"
+#include "PrintReceiptDialog.h"
 
 class MainForm : public QMainWindow
 {
     Q_OBJECT
 
-private:
-    Ui::MainFormClass ui;
-    StaffAccount _account;
-    void setPositionsTableWidget(const Order*);
-    void setClientCard(int);
-    void setRemark(int);
-    void clearClientCard();
-    void clearRemark();
-    void setChangesOrderCard(int);
-    void clearChangesOrderCard();
-    /*static void setOrdersList(const std::vector<Order>& ordersList) { _ordersList = ordersList; };
-    void setClientsList(const std::vector<Client>& clientsList) { _clientsList = clientsList; };
-    void setStaffsList(const std::vector<Staff>& staffsList) { _staffsList = staffsList; };
-    void setPositionsList(const std::vector<OrderPosition>& positionsList) { _positionsList = positionsList; };
-    void setAccountsList(const std::vector<StaffAccount>& accountsList) { _accountsList = accountsList; };*/
-
-private slots:
-    void addClientSlot();
-    void clientListSlot();
-    void staffListSlot();
-    void createOrderSlot();
-    void printOrderSlot();
-    void editOrderSlot();
-    void removeOrderSlot();
-    void clickOnRowSlot();
-    void searchOnClientSlot();
-    void slotCustomMenuRequested(const QPoint&);
-    void slotSetAvailability();
-
 public:
-    MainForm(QWidget *parent = Q_NULLPTR);
+    MainForm(int accountId, QWidget* parent = Q_NULLPTR);
     ~MainForm() = default;
     static std::vector<Order> _ordersList;
     static std::vector<Client> _clientsList;
@@ -57,14 +28,36 @@ public:
     void setOrdersTableWidget(const std::vector<Order*>&);
     void clearPositionsTableWidget();
     void setTransparentClientCard();
-    void setAccount(const StaffAccount& account) { _account = account; };
-    const StaffAccount& getAccount() const { return _account; };
-    Order* findOrder(int orderId);
-    Client* findClient(int clientId);
-    Staff* findStaff(int staffId);
-    std::vector<OrderPosition> findOrderPositions(int orderId);
-    StaffAccount* findAccount(int accountId);
-    static int getIndex(const std::vector<Order>&, int);
-    static int getIndex(const std::vector<Client>&, int);
-    static int getIndex(const std::vector<Staff>&, int);
+    static Order* findOrder(int orderId);
+    static Client* findClient(int clientId);
+    static Staff* findStaff(int staffId);
+    static StaffAccount* findAccount(int accountId);
+    std::vector<OrderPosition*> findOrderPositions(int orderId);
+    static OrderPosition* findPosition(int positionId);
+    static bool checkStaffInOrders(int);
+    static bool checkClientInOrders(int);
+
+private:
+    Ui::MainFormClass ui;
+    StaffAccount* _currentAccount;
+    std::vector<Order*> _foundOrders;
+    void setPositionsTableWidget(const Order*);
+    void setClientCard(int);
+    void setRemark(int);
+    void setChangesOrderCard(int);
+    void clearClientCard();
+    void clearRemark();    
+    void clearChangesOrderCard();
+
+private slots:
+    void clientListSlot();
+    void staffListSlot();
+    void createOrderSlot();
+    void editOrderSlot();
+    void removeOrderSlot();
+    void printOrderSlot();
+    void clickOnRowSlot();
+    void searchOnClientSlot();
+    void slotCustomMenuRequested(const QPoint&);
+    void slotSetAvailability();
 };

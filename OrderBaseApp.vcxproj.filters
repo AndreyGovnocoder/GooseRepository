@@ -50,18 +50,6 @@
     <ClCompile Include="DataBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AddClientForm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AddStaffForm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ClientsForm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="StaffsForm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="LoginPassDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -69,6 +57,24 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CreateAccountForm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientsFormDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AddClientDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StaffsFormDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AddStaffDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintReceiptDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ToPrintForm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -96,22 +102,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="AddClientForm.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="AddStaffForm.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="EditClientDialog.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="EditStaffDialog.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="ClientsForm.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="StaffsForm.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="SetDateDialog.h">
@@ -126,33 +120,33 @@
     <QtMoc Include="CreateAccountForm.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="ClientsFormDialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="AddClientDialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="StaffsFormDialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="AddStaffDialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="PrintReceiptDialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="ToPrintForm.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="AddClientForm.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="AddStaffForm.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
     <QtUic Include="EditClientDialog.ui">
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="EditStaffDialog.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtUic Include="ClientsForm.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="StaffsForm.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
     <QtUic Include="SetDateDialog.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="CreateOrderForm.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="CreateOrderDialog.ui">
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="CreateAccountForm.ui">
@@ -161,9 +155,27 @@
     <QtUic Include="LoginPassDialog.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="cpp.hint" />
+    <QtUic Include="CreateOrderDialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="ClientsFormDialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="AddClientDialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="StaffsFormDialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="AddStaffDialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="PrintReceiptDialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="ToPrintForm.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OrderBaseApp.rc">

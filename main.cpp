@@ -30,16 +30,12 @@ int main(int argc, char *argv[])
         _db->setHostName("OrderBasePrint_dataBase");
         _db->setDatabaseName("OrderBasePrint_dataBase.db");
         if (!_db->open())
-        {
-            QMessageBox::warning(0, "", "error open database");
-        }
+            QMessageBox::warning(0, "", "error open database");        
     }
-   
 
+    loginPassDialog.setWindowTitle("Авторизация");
     if (loginPassDialog.exec())
-    {
         launchApp = true;
-    }
     else 
     {
         delDB(_db);
@@ -49,11 +45,7 @@ int main(int argc, char *argv[])
 
     if (launchApp)
     {
-        MainForm mainForm;
-        mainForm.setAccount(loginPassDialog.getAccount());
-        mainForm.setWindowTitle(mainForm.windowTitle() + "  Учетная запись: " + 
-            QString::fromStdString(loginPassDialog.getAccount().getPosition()) + " " + 
-            QString::fromStdString(loginPassDialog.getAccount().getName()));
+        MainForm mainForm(loginPassDialog.getAccountId());
         mainForm.show();
         
         int q = a.exec();

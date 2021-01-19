@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>219</height>
+    <width>331</width>
+    <height>183</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>170</y>
+     <y>150</y>
      <width>151</width>
      <height>23</height>
     </rect>
@@ -30,8 +30,8 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>120</y>
-     <width>271</width>
+     <y>110</y>
+     <width>311</width>
      <height>41</height>
     </rect>
    </property>
@@ -70,7 +70,7 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>271</width>
+     <width>311</width>
      <height>91</height>
     </rect>
    </property>
@@ -123,24 +123,6 @@
      </widget>
     </item>
    </layout>
-  </widget>
-  <widget class="QCheckBox" name="showCheckBox">
-   <property name="geometry">
-    <rect>
-     <x>290</x>
-     <y>70</y>
-     <width>101</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>12</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Показать</string>
-   </property>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

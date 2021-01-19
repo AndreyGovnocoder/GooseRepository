@@ -13,15 +13,12 @@
 #include <qstring.h>
 #include <vector>
 #include "Order.h"
-
-//#define DATABASE_NAME       "OrderBasePrint_dataBase.mdb"
-//#define TABLE_CLIENTS                  "clients.txt"
-//#define TABLE_STAFF                    "staff.txt"
+#include <vector>
+#include <qfile.h>
+#include <qtextstream.h>
 
 class DataBase
 {
-private:
-
 public:
     DataBase() = default;
     ~DataBase() = default;
@@ -31,34 +28,34 @@ public:
     static const QString TABLE_STAFFS;
     static const QString TABLE_ORDERS;
     static const QString TABLE_POSITIONS;
+    static const QString TABLE_RECEIPT_COUNT;
 
     static int getLastId(const QString&);
-    static std::vector<Client> getClientsList();   
-    static void addClient(const Client&);
-    static Client getClient(int);
-    static void editClient(const Client&);
-    static void removeClient(int);
+    static bool incrementReceiptCount();
+    static int getReceiptCount();
+    static std::vector<Client> getClientsList();
+    static bool addClient(const Client&);
+    static bool editClient(const Client&);
+    static bool editClient(const Client*);
+    static bool removeClient(int);
     static std::vector<Staff> getStaffList();
-    static void addStaff(const Staff&);
-    static Staff getStaff(int);
-    static void removeStaff(int);
-    static void editStaff(const Staff&);
+    static bool addStaff(const Staff&);
+    static bool editStaff(const Staff&);
+    static bool editStaff(const Staff*);
+    static bool removeStaff(int);    
     static std::vector<Order> getOrdersList();
     static bool addOrder(const Order&);
-    static Order getOrder(int);
-    static bool removeOrder(int);
     static bool editOrder(const Order*);
-    static bool editOrder(const Order&);  
-    static void addPosition(int, const OrderPosition&);
-    static void editPosition(const OrderPosition&);
-    static void removePositionById(int);
-    static void removePositionByIdOrder(int);
+    static bool editOrder(const Order&);
+    static bool removeOrder(int);
     static std::vector<OrderPosition> getOrderPositionsList(int);
     static std::vector<OrderPosition> getAllPositions();
-    static void addAccount(const StaffAccount&);
-    static StaffAccount getAccount(int);
+    static bool addPosition(int, const OrderPosition&);
+    static bool editPosition(const OrderPosition&);
+    static bool removePositionById(int);
+    static bool removePositionByIdOrder(int);
     static std::vector<StaffAccount> getAccountsList();
-
+    static bool addAccount(const StaffAccount&);    
 };
 
 #endif  DATABASE_H

@@ -1,17 +1,10 @@
 #include "CreateOrderDialog.h"
-#include "SetDateDialog.h"
-#include "Client.h"
-#include "DataBase.h"
-#include "qmessagebox.h"
-#include "Order.h"
-#include "MainForm.h"
-#include <qcompleter.h>
 
 CreateOrderDialog::CreateOrderDialog(QWidget* parent)
 	: QDialog(parent)
 {
 	_isEditOrder = false;
-	
+
 	setupUi(this);
 	setCurrentDate();
 	setClientsList();
@@ -37,27 +30,46 @@ CreateOrderDialog::CreateOrderDialog(QWidget* parent, Order* editOrder)
 	addOrderBtn->setVisible(false);
 }
 
-void CreateOrderDialog::setOrderToUI()
+void CreateOrderDialog::setPositionsList(const std::vector<OrderPosition>& positionsList)
 {
-	//устанавливаем редактируемый заказ в пользовательский интерфейс
-}
+	//добавляем в таблицу список позиций заказа
 
-void CreateOrderDialog::setClientsList()
-{
-	//устанавливаем список клиентов в comboBox
+	int row = 0;
 
-	std::vector<Client> clientsList(MainForm::_clientsList);
-	size_t i = 0;
-	for (; i < clientsList.size(); ++i)
+	for (auto& position : positionsList)
 	{
-		QVariant var;
-		var.setValue(clientsList[i].getId());
+		QString description;
+		QString descr;
+		QStringList descriptionList;
+		description = QString::fromStdString(position.getDescription());
+		descriptionList = description.split('^');
 
-		clientsComboBox->addItem(QString::fromStdString(clientsList[i].getName()));
-		clientsComboBox->setItemData(i, var);
+		size_t i = 0;
+		for (; i < descriptionList.size(); ++i)
+		{
+			descr.append(descriptionList.at(i));
+			if (i != (descriptionList.size() - 1)) descr.append('\n');
+		}
+
+		QString quantity = QString::fromStdString(position.getQuantity());
+		QString issue = QString::fromStdString(position.getIssue());
+
+		QTableWidgetItem* descriptionItem = new QTableWidgetItem(descr);
+		QTableWidgetItem* quantityItem = new QTableWidgetItem(quantity);
+		QTableWidgetItem* issueItem = new QTableWidgetItem(issue);
+
+		positionTableWidget->insertRow(row);
+		positionTableWidget->setItem(row, 0, descriptionItem);
+		positionTableWidget->setItem(row, 1, quantityItem);
+		positionTableWidget->setItem(row, 2, issueItem);
+
+		++row;
 	}
 
-	clientsComboBox->setCurrentIndex(-1);
+	positionTableWidget->resizeColumnsToContents();
+	positionTableWidget->resizeRowsToContents();
+	positionTableWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+	positionTableWidget->horizontalHeaderItem(2)->setTextAlignment(50);
 }
 
 void CreateOrderDialog::setCurrentDate()
@@ -66,6 +78,26 @@ void CreateOrderDialog::setCurrentDate()
 
 	QDate date = QDate::currentDate();
 	dateEdit->setDate(date);
+}
+
+void CreateOrderDialog::setClientsList()
+{
+	//устанавливаем список клиентов в comboBox
+	int index = 0;
+
+	for (auto& client : MainForm::_clientsList)
+	{
+		if (client.isActive())
+		{
+			QVariant var;
+			var.setValue(client.getId());
+			clientsComboBox->addItem(QString::fromStdString(client.getName()));
+			clientsComboBox->setItemData(index, var);
+			++index;
+		}
+	}
+
+	clientsComboBox->setCurrentIndex(-1);
 }
 
 void CreateOrderDialog::setPayment()
@@ -82,17 +114,15 @@ void CreateOrderDialog::setManagersList()
 {
 	//устанавливаем список менеджеров
 
-	std::vector<Staff> staffList(MainForm::_staffsList);
 	int index = 0;
-	size_t i = 0;
-	for (; i < staffList.size(); ++i)
+
+	for (auto& staff : MainForm::_staffsList)
 	{
-		if (staffList[i].getPosition() == "менеджер")
+		if (staff.isActive() && staff.getPosition() == "менеджер")
 		{
 			QVariant var;
-			var.setValue(staffList[i].getId());
-
-			managersComboBox->addItem(QString::fromStdString(staffList[i].getName()));
+			var.setValue(staff.getId());
+			managersComboBox->addItem(QString::fromStdString(staff.getName()));
 			managersComboBox->setItemData(index, var);
 			++index;
 		}
@@ -105,17 +135,15 @@ void CreateOrderDialog::setDesignersList()
 {
 	//устанавливаем список дизайнеров
 
-	std::vector<Staff> staffList(MainForm::_staffsList);
 	int index = 0;
-	size_t i = 0;
-	for (; i < staffList.size(); ++i)
+
+	for (auto& staff : MainForm::_staffsList)
 	{
-		if (staffList[i].getPosition() == "дизайнер")
+		if (staff.isActive() && staff.getPosition() == "дизайнер")
 		{
 			QVariant var;
-			var.setValue(staffList[i].getId());
-
-			designersComboBox->addItem(QString::fromStdString(staffList[i].getName()));
+			var.setValue(staff.getId());
+			designersComboBox->addItem(QString::fromStdString(staff.getName()));
 			designersComboBox->setItemData(index, var);
 			++index;
 		}
@@ -138,9 +166,16 @@ void CreateOrderDialog::addPosition()
 	//добавляем позицию заказа
 
 	int rowCount = positionTableWidget->rowCount();
-	QString description = descriptionTextEdit->toPlainText();
-	QString quantity = quantityLineEdit->text();
-	QString issue = issueComboBox->currentText();
+	QString description = "Описание позиции отсутствует";
+	QString quantity = "Не указано";
+	QString issue = "Не указано";
+
+	if(!descriptionTextEdit->toPlainText().isEmpty())
+		description = descriptionTextEdit->toPlainText();
+	if(!quantityLineEdit->text().isEmpty())
+		quantity = quantityLineEdit->text();
+	if(!issueComboBox->currentText().isEmpty())
+		issue = issueComboBox->currentText();
 
 	QTableWidgetItem* descriptionItem = new QTableWidgetItem(description);
 	QTableWidgetItem* quantityItem = new QTableWidgetItem(quantity);
@@ -153,45 +188,6 @@ void CreateOrderDialog::addPosition()
 	positionTableWidget->setItem(rowCount, 0, descriptionItem);
 	positionTableWidget->setItem(rowCount, 1, quantityItem);
 	positionTableWidget->setItem(rowCount, 2, issueItem);
-	positionTableWidget->resizeColumnsToContents();
-	positionTableWidget->resizeRowsToContents();
-	positionTableWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
-	positionTableWidget->horizontalHeaderItem(2)->setTextAlignment(50);
-	positionTableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
-	positionTableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
-	positionTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
-}
-
-void CreateOrderDialog::setPositionsList(const std::vector<OrderPosition>& positionsList)
-{
-	//добавляем в таблицу список позиций заказа
-	for (int i = 0; i < positionsList.size(); ++i)
-	{
-		QString description;
-		QString descr;
-		QStringList descriptionList;
-		description = QString::fromStdString(positionsList[i].getDescription());
-		descriptionList = description.split('^');
-
-		for (int i = 0; i < descriptionList.size(); ++i)
-		{
-			descr.append(descriptionList.at(i));
-			if (i != (descriptionList.size() - 1)) descr.append('\n');
-		}
-
-		QString quantity = QString::fromStdString(positionsList[i].getQuantity());
-		QString issue = QString::fromStdString(positionsList[i].getIssue());
-
-		QTableWidgetItem* descriptionItem = new QTableWidgetItem(descr);
-		QTableWidgetItem* quantityItem = new QTableWidgetItem(quantity);
-		QTableWidgetItem* issueItem = new QTableWidgetItem(issue);
-
-		positionTableWidget->insertRow(i);
-		positionTableWidget->setItem(i, 0, descriptionItem);
-		positionTableWidget->setItem(i, 1, quantityItem);
-		positionTableWidget->setItem(i, 2, issueItem);
-	}
-
 	positionTableWidget->resizeColumnsToContents();
 	positionTableWidget->resizeRowsToContents();
 	positionTableWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
@@ -214,9 +210,7 @@ std::vector<OrderPosition> CreateOrderDialog::getPositionsList()
 		std::string issue = positionTableWidget->item(i, 2)->text().toStdString();
 
 		if (_isEditOrder)
-		{
-			position.setIdOrder(_editOrder->getId());
-		}
+			position.setIdOrder(_editOrder->getId());		
 
 		position.setQuantity(quantity);
 		position.setIssue(issue);
@@ -224,15 +218,15 @@ std::vector<OrderPosition> CreateOrderDialog::getPositionsList()
 		QString description = positionTableWidget->item(i, 0)->text();
 		QStringList descList = description.split('\n');
 		std::string descrString;
-
-		for (int i = 0; i < descList.size(); ++i)
+		
+		size_t k = 0;
+		for (; k < descList.size(); ++k)
 		{
-			descrString.append(descList.at(i).toStdString());
-			if (i != (descList.size() - 1)) descrString.append("^");
+			descrString.append(descList.at(k).toStdString());
+			if (k != (descList.size() - 1)) descrString.append("^");
 		}
 
 		position.setDescription(descrString);
-
 		positionsList.push_back(position);
 	}
 
@@ -251,7 +245,8 @@ std::string CreateOrderDialog::getRemark()
 	for (; i < remarkList.size(); ++i)
 	{
 		remark.append(remarkList.at(i));
-		if (i != (remarkList.size() - 1)) remark.append("^");
+		if (i != (remarkList.size() - 1)) 
+			remark.append("^");
 	}
 
 	return remark.toStdString();
@@ -264,13 +259,9 @@ void CreateOrderDialog::setEditOrder()
 	int designerId = -1;
 	int clientId = -1;
 	QDateTime currentDateTime = QDateTime::currentDateTime();
-
-	if (_isEditOrder)
-	{
-		_editOrder->setDateTimeEdit(currentDateTime);
-		_editOrder->setAccountEdit(getAccount().getId());
-	}
-
+	
+	_editOrder->setDateTimeEdit(currentDateTime);
+	_editOrder->setAccountEdit(getAccount()->getId());
 	_editOrder->setDate(dateEdit->date());
 	_editOrder->setAmount(amountLineEdit->text().toStdString());
 	_editOrder->setPayment(paymentComboBox->currentText().toStdString());
@@ -282,84 +273,26 @@ void CreateOrderDialog::setEditOrder()
 		_editOrder->setManager(managerId);
 	}
 	else
-	{
 		_editOrder->setManager(0);
-	}
+	
 
-	if (designersComboBox->currentIndex() != -1) 
+	if (designersComboBox->currentIndex() != -1)
 	{
 		designerId = designersComboBox->currentData().toInt();
 		_editOrder->setDesigner(designerId);
 	}
 	else
-	{
-		_editOrder->setDesigner(0);
-	}
+		_editOrder->setDesigner(0);	
 
-	if (clientsComboBox->currentIndex() != -1) 
+	if (clientsComboBox->currentIndex() != -1)
 	{
 		clientId = clientsComboBox->currentData().toInt();
 		_editOrder->setClient(clientId);
 	}
 	else
-	{
-		_editOrder->setClient(0);
-	}
+		_editOrder->setClient(-1);	
 
 	_editOrder->setPositionsList(getPositionsList());
-}
-
-void CreateOrderDialog::setNewOrder()
-{
-	int managerId = -1;
-	int designerId = -1;
-	int clientId = -1;
-	QDateTime currentDateTime = QDateTime::currentDateTime();
-
-	
-		_newOrder.setAccountCreate(getAccount().getId());
-		_newOrder.setAccountEdit(-1);
-		_newOrder.setAccountAvailability(-1);
-		_newOrder.setDateTimeCreate(currentDateTime);
-		_newOrder.setAvailability("В работе");
-	
-
-	_newOrder.setDate(dateEdit->date());
-	_newOrder.setAmount(amountLineEdit->text().toStdString());
-	_newOrder.setPayment(paymentComboBox->currentText().toStdString());
-	_newOrder.setRemark(getRemark());
-
-	if (managersComboBox->currentIndex() != -1)
-	{
-		managerId = managersComboBox->currentData().toInt();
-		_newOrder.setManager(managerId);
-	}
-	else
-	{
-		_newOrder.setManager(0);
-	}
-
-	if (designersComboBox->currentIndex() != -1)
-	{
-		designerId = designersComboBox->currentData().toInt();
-		_newOrder.setDesigner(designerId);
-	}
-	else
-	{
-		_newOrder.setDesigner(0);
-	}
-
-	if (clientsComboBox->currentIndex() != -1)
-	{
-		clientId = clientsComboBox->currentData().toInt();
-		_newOrder.setClient(clientId);
-	}
-	else
-	{
-		_newOrder.setClient(0);
-	}
-
-	_newOrder.setPositionsList(getPositionsList());
 }
 
 void CreateOrderDialog::setEditOrderToUI()
@@ -372,23 +305,17 @@ void CreateOrderDialog::setEditOrderToUI()
 		for (; i <= clientsComboBox->count(); ++i)
 		{
 			if (_editOrder->getClient() == clientsComboBox->itemData(i))
-			{
-				clientsComboBox->setCurrentIndex(i);
-			}
+				clientsComboBox->setCurrentIndex(i);			
 		}
 	}
 	else
-	{
 		clientsComboBox->setCurrentIndex(-1);
-	}
 
 	size_t i = 0;
 	for (; i <= paymentComboBox->count(); ++i)
 	{
 		if (QString::fromStdString(_editOrder->getPayment()) == paymentComboBox->itemText(i))
-		{
 			paymentComboBox->setCurrentIndex(i);
-		}
 	}
 
 	amountLineEdit->setText(QString::fromStdString(_editOrder->getAmount()));
@@ -397,18 +324,14 @@ void CreateOrderDialog::setEditOrderToUI()
 	for (; i <= managersComboBox->count(); ++i)
 	{
 		if (_editOrder->getManager() == managersComboBox->itemData(i))
-		{
 			managersComboBox->setCurrentIndex(i);
-		}
 	}
 
 	i = 0;
 	for (; i <= designersComboBox->count(); ++i)
 	{
 		if (_editOrder->getDesigner() == designersComboBox->itemData(i))
-		{
 			designersComboBox->setCurrentIndex(i);
-		}
 	}
 
 	QString remarkString = QString::fromStdString(_editOrder->getRemark());
@@ -419,11 +342,56 @@ void CreateOrderDialog::setEditOrderToUI()
 	for (; i < remarkList.size(); ++i)
 	{
 		remark.append(remarkList.at(i));
-		if (i != (remarkList.size() - 1)) remark.append("\n");
+		if (i != (remarkList.size() - 1)) 
+			remark.append("\n");
 	}
 
 	remarkTextEdit->setText(remark);
 	setPositionsList(_editOrder->getPositionsList());
+}
+
+void CreateOrderDialog::setNewOrder()
+{
+	int managerId = -1;
+	int designerId = -1;
+	int clientId = -1;
+	QDateTime currentDateTime = QDateTime::currentDateTime();
+
+	_newOrder.setAccountCreate(getAccount()->getId());
+	_newOrder.setAccountEdit(-1);
+	_newOrder.setAccountAvailability(-1);
+	_newOrder.setDateTimeCreate(currentDateTime);
+	_newOrder.setAvailability("В работе");
+	_newOrder.setDate(dateEdit->date());
+	_newOrder.setAmount(amountLineEdit->text().toStdString());
+	_newOrder.setPayment(paymentComboBox->currentText().toStdString());
+	_newOrder.setRemark(getRemark());
+
+	if (managersComboBox->currentIndex() != -1)
+	{
+		managerId = managersComboBox->currentData().toInt();
+		_newOrder.setManager(managerId);
+	}
+	else
+		_newOrder.setManager(-1);
+
+	if (designersComboBox->currentIndex() != -1)
+	{
+		designerId = designersComboBox->currentData().toInt();
+		_newOrder.setDesigner(designerId);
+	}
+	else
+		_newOrder.setDesigner(-1);
+
+	if (clientsComboBox->currentIndex() != -1)
+	{
+		clientId = clientsComboBox->currentData().toInt();
+		_newOrder.setClient(clientId);
+	}
+	else
+		_newOrder.setClient(-1);
+
+	_newOrder.setPositionsList(getPositionsList());
 }
 
 void CreateOrderDialog::openCalendarSlot()
@@ -438,29 +406,20 @@ void CreateOrderDialog::openCalendarSlot()
 	setDateDialog.move(point);
 	setDateDialog.setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
 	if (setDateDialog.exec())
-	{
-		dateEdit->setDate(setDateDialog.calendarWidget->selectedDate());
-	}
+		dateEdit->setDate(setDateDialog.calendarWidget->selectedDate());	
 }
 
 void CreateOrderDialog::addOrderToDBSlot()
 {
 	//внести заказ в БД
 	setNewOrder();
-	/*if (DataBase::addOrder(getOrder()))
-	{
-		_order.setId(DataBase::getLastId(DataBase::TABLE_ORDERS));
-		accept();
-	}	
-	else
-		QMessageBox::warning(0, "Error", "При добавлении заказа в БД возникла ошибка");*/
 	_isOk = true;
+	accept();
 }
 
 void CreateOrderDialog::addPositionSlot()
 {
 	//добавить позицию
-
 	addPosition();
 	descriptionTextEdit->clear();
 	quantityLineEdit->clear();
@@ -479,13 +438,6 @@ void CreateOrderDialog::saveChangesSlot()
 {
 	//сохраняем изменения
 	setEditOrder();
-	/*if(DataBase::editOrder(getOrder()))
-		accept();
-	else 
-		QMessageBox::warning(0, "Error", "При сохранении заказа в БД возникла ошибка");*/
 	_isOk = true;
+	accept();
 }
-
-
-	
-

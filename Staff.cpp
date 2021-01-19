@@ -1,16 +1,18 @@
 #include <string>
 #include "Staff.h"
 
-Staff::Staff(const int id, const std::string& name, const std::string& position)
+Staff::Staff(const int id, const std::string& name, const std::string& position, const bool active)
 	: _id(id)
 	, _name(name)
 	, _position(position)
+	, _active(active)
 {
 }
 
-Staff::Staff(const std::string& name, const std::string& position)
+Staff::Staff(const std::string& name, const std::string& position, const bool active)
 	: _name(name)
 	, _position(position)
+	, _active(active)
 {
 }
 

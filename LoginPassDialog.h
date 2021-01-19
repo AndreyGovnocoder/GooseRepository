@@ -6,23 +6,23 @@
 #include "CreateAccountForm.h"
 #include "StaffAccount.h"
 #include "DataBase.h"
+#include "MainForm.h"
 #include <QtWidgets\qmessagebox.h>
 
 class LoginPassDialog : public QDialog, public Ui::LoginPassDialog
 {
 	Q_OBJECT
 
+public:
+	LoginPassDialog(QWidget *parent = Q_NULLPTR);
+	~LoginPassDialog() = default;
+	void setAccountId(int accountId) { _accountId = accountId; }
+	int getAccountId() { return _accountId; };
+
 private:
-	StaffAccount _account;
+	int _accountId;
 
 private slots:
 	void createAccountSlot();
 	void checkLoginPassSlot();
-
-public:
-	LoginPassDialog(QWidget *parent = Q_NULLPTR);
-	~LoginPassDialog() = default;
-	void setAccount(const StaffAccount& account) { _account = account; }
-	const StaffAccount& getAccount() const { return _account; };
-
 };

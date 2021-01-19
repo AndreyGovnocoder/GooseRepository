@@ -2,14 +2,8 @@
 #include <string>
 #include <qstring.h>
 
-class OrderPosition {
-private:
-	int _idOrder;
-	int _idPosition;
-	std::string _description;
-	std::string _quantity;
-	std::string _issue;
-
+class OrderPosition 
+{
 public:
 	OrderPosition() = default;
 	~OrderPosition() = default;
@@ -23,4 +17,11 @@ public:
 	const std::string& getDescription() const { return _description; };
 	const std::string& getQuantity() const { return _quantity; };
 	const std::string& getIssue() const { return _issue; };
+
+private:
+	int _idOrder;
+	int _idPosition;
+	std::string _description;
+	std::string _quantity;
+	std::string _issue;
 };

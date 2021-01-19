@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>362</width>
-    <height>207</height>
+    <height>193</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <x>20</x>
      <y>150</y>
      <width>331</width>
-     <height>42</height>
+     <height>31</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -28,7 +28,7 @@
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>40</height>
+        <height>23</height>
        </size>
       </property>
       <property name="text">
@@ -54,7 +54,7 @@
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>40</height>
+        <height>23</height>
        </size>
       </property>
       <property name="text">
