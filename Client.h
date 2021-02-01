@@ -6,8 +6,8 @@
 class Client 
 {
 public:
-	Client(int, const std::string&, const std::string&, const std::string&, const bool);
-	Client(const std::string&, const std::string&, const std::string&, const bool);
+	Client(int id, const std::string& name, const std::string& phone, const std::string& mail, bool active);
+	Client(const std::string& name, const std::string& phone, const std::string& mail, bool active);
 	Client() = default;
 	~Client() = default;
 

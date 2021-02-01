@@ -23,8 +23,8 @@ void LoginPassDialog::checkLoginPassSlot()
 	// сверяем логин и пароль
 
 	std::vector<StaffAccount>& accountsList = DataBase::getAccountsList();
-	std::string login = loginLineEdit->text().toStdString();
-	std::string password = passwordLineEdit->text().toStdString();
+	const std::string login = loginLineEdit->text().toStdString();
+	const std::string password = passwordLineEdit->text().toStdString();
 	auto it = std::find_if(accountsList.begin(), accountsList.end(), [&login](const StaffAccount& account) {return account.getLogin() == login; });
 	if (it != accountsList.end())
 	{

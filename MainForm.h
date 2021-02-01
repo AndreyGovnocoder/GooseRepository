@@ -25,7 +25,7 @@ public:
     static std::vector<OrderPosition> _positionsList;
     static std::vector<StaffAccount> _accountsList;
     void setOrdersTableWidget();
-    void setOrdersTableWidget(const std::vector<Order*>&);
+    void setOrdersTableWidget(const std::vector<Order*>& ordersList);
     void clearPositionsTableWidget();
     void setTransparentClientCard();
     static Order* findOrder(int orderId);
@@ -34,17 +34,17 @@ public:
     static StaffAccount* findAccount(int accountId);
     std::vector<OrderPosition*> findOrderPositions(int orderId);
     static OrderPosition* findPosition(int positionId);
-    static bool checkStaffInOrders(int);
-    static bool checkClientInOrders(int);
+    static bool checkStaffInOrders(int staffId);
+    static bool checkClientInOrders(int clientId);
 
 private:
     Ui::MainFormClass ui;
     StaffAccount* _currentAccount;
     std::vector<Order*> _foundOrders;
-    void setPositionsTableWidget(const Order*);
-    void setClientCard(int);
-    void setRemark(int);
-    void setChangesOrderCard(int);
+    void setPositionsTableWidget(const Order* order);
+    void setClientCard(int orderId);
+    void setRemark(int orderId);
+    void setChangesOrderCard(int orderId);
     void clearClientCard();
     void clearRemark();    
     void clearChangesOrderCard();
@@ -58,6 +58,6 @@ private slots:
     void printOrderSlot();
     void clickOnRowSlot();
     void searchOnClientSlot();
-    void slotCustomMenuRequested(const QPoint&);
+    void slotCustomMenuRequested(const QPoint& pos);
     void slotSetAvailability();
 };

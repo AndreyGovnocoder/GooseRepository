@@ -32,11 +32,9 @@ void MainForm::setOrdersTableWidget()
     QString date;
     QString payment;
     QString amount;
-
     QString availability;
 
-    size_t i = 0;
-    for (; i < _ordersList.size(); ++i)
+    for (size_t i = 0; i < _ordersList.size(); ++i)
     {
         orderId = _ordersList[i].getId();
         date = _ordersList[i].getDate().toString("dd.MM.yyyy");
@@ -46,27 +44,23 @@ void MainForm::setOrdersTableWidget()
 
         QTableWidgetItem* orderIdItem = new QTableWidgetItem(QString::number(orderId));
         orderIdItem->setData(Qt::UserRole, orderId);
-        QTableWidgetItem* dateItem = new QTableWidgetItem(date);
         QTableWidgetItem* clientItem = new QTableWidgetItem();
-
-        QTableWidgetItem* paymentItem = new QTableWidgetItem(payment);
-        QTableWidgetItem* amountItem = new QTableWidgetItem(amount);
         QTableWidgetItem* managerItem = new QTableWidgetItem();
         QTableWidgetItem* designerItem = new QTableWidgetItem();
 
-        if (Client* client = findClient(_ordersList[i].getClient()))
+        if (const Client* client = findClient(_ordersList[i].getClient()))
         {
             clientItem->setText(QString::fromStdString(client->getName()));
             clientItem->setData(Qt::UserRole, client->getId());
         }
 
-        if (Staff* designer = findStaff(_ordersList[i].getDesigner()))
+        if (const Staff* designer = findStaff(_ordersList[i].getDesigner()))
         {
             designerItem->setText(QString::fromStdString(designer->getName()));
             designerItem->setData(Qt::UserRole, designer->getId());
         }
 
-        if (Staff* manager = findStaff(_ordersList[i].getManager()))
+        if (const Staff* manager = findStaff(_ordersList[i].getManager()))
         {
             if (manager->getId() > 0)
             {
@@ -75,17 +69,15 @@ void MainForm::setOrdersTableWidget()
             }
         }
 
-        QTableWidgetItem* availabilityItem = new QTableWidgetItem(availability);
-
         ui.ordersTableWidget->insertRow(i);
         ui.ordersTableWidget->setItem(i, 0, orderIdItem);
-        ui.ordersTableWidget->setItem(i, 1, dateItem);
+        ui.ordersTableWidget->setItem(i, 1, new QTableWidgetItem(date));
         ui.ordersTableWidget->setItem(i, 2, clientItem);
-        ui.ordersTableWidget->setItem(i, 3, paymentItem);
-        ui.ordersTableWidget->setItem(i, 4, amountItem);
+        ui.ordersTableWidget->setItem(i, 3, new QTableWidgetItem(payment));
+        ui.ordersTableWidget->setItem(i, 4, new QTableWidgetItem(amount));
         ui.ordersTableWidget->setItem(i, 5, managerItem);
         ui.ordersTableWidget->setItem(i, 6, designerItem);
-        ui.ordersTableWidget->setItem(i, 7, availabilityItem);
+        ui.ordersTableWidget->setItem(i, 7, new QTableWidgetItem(availability));
     }
 
     ui.ordersTableWidget->hideColumn(0);
@@ -103,11 +95,9 @@ void MainForm::setOrdersTableWidget(const std::vector<Order*>& ordersList)
     QString date;
     QString payment;
     QString amount;
-
     QString availability;
 
-    size_t i = 0;
-    for (; i < ordersList.size(); ++i)
+    for (size_t i = 0; i < ordersList.size(); ++i)
     {
         orderId = ordersList[i]->getId();
         date = ordersList[i]->getDate().toString("dd.MM.yyyy");
@@ -117,27 +107,23 @@ void MainForm::setOrdersTableWidget(const std::vector<Order*>& ordersList)
 
         QTableWidgetItem* orderIdItem = new QTableWidgetItem(QString::number(orderId));
         orderIdItem->setData(Qt::UserRole, orderId);
-        QTableWidgetItem* dateItem = new QTableWidgetItem(date);
         QTableWidgetItem* clientItem = new QTableWidgetItem();
-
-        QTableWidgetItem* paymentItem = new QTableWidgetItem(payment);
-        QTableWidgetItem* amountItem = new QTableWidgetItem(amount);
         QTableWidgetItem* managerItem = new QTableWidgetItem();
         QTableWidgetItem* designerItem = new QTableWidgetItem();
 
-        if (Client* client = findClient(ordersList[i]->getClient()))
+        if (const Client* client = findClient(ordersList[i]->getClient()))
         {
             clientItem->setText(QString::fromStdString(client->getName()));
             clientItem->setData(Qt::UserRole, client->getId());
         }
 
-        if (Staff* designer = findStaff(ordersList[i]->getDesigner()))
+        if (const Staff* designer = findStaff(ordersList[i]->getDesigner()))
         {
             designerItem->setText(QString::fromStdString(designer->getName()));
             designerItem->setData(Qt::UserRole, designer->getId());
         }
 
-        if (Staff* manager = findStaff(ordersList[i]->getManager()))
+        if (const Staff* manager = findStaff(ordersList[i]->getManager()))
         {
             if (manager->getId() > 0)
             {
@@ -146,17 +132,15 @@ void MainForm::setOrdersTableWidget(const std::vector<Order*>& ordersList)
             }
         }
 
-        QTableWidgetItem* availabilityItem = new QTableWidgetItem(availability);
-
         ui.ordersTableWidget->insertRow(i);
         ui.ordersTableWidget->setItem(i, 0, orderIdItem);
-        ui.ordersTableWidget->setItem(i, 1, dateItem);
+        ui.ordersTableWidget->setItem(i, 1, new QTableWidgetItem(date));
         ui.ordersTableWidget->setItem(i, 2, clientItem);
-        ui.ordersTableWidget->setItem(i, 3, paymentItem);
-        ui.ordersTableWidget->setItem(i, 4, amountItem);
+        ui.ordersTableWidget->setItem(i, 3, new QTableWidgetItem(payment));
+        ui.ordersTableWidget->setItem(i, 4, new QTableWidgetItem(amount));
         ui.ordersTableWidget->setItem(i, 5, managerItem);
         ui.ordersTableWidget->setItem(i, 6, designerItem);
-        ui.ordersTableWidget->setItem(i, 7, availabilityItem);
+        ui.ordersTableWidget->setItem(i, 7, new QTableWidgetItem(availability));
     }
 
     ui.ordersTableWidget->hideColumn(0);
@@ -249,16 +233,14 @@ void MainForm::setPositionsTableWidget(const Order* order)
     ui.positionsTableWidget->setRowCount(0);
     ui.positionsTableWidget->hideColumn(0);
 
-    size_t i = 0;
-    for (; i < positionsList.size(); ++i)
+    for (size_t i = 0; i < positionsList.size(); ++i)
     {
         QString descr;
         positionId = positionsList[i].getIdPosition();
         description = QString::fromStdString(positionsList[i].getDescription());
         descriptionList = description.split('^');
 
-        size_t k = 0;
-        for (; k < descriptionList.size(); ++k)
+        for (size_t k = 0; k < descriptionList.size(); ++k)
         {
             descr.append(descriptionList.at(k));
             if (k != (descriptionList.size() - 1)) 
@@ -269,15 +251,12 @@ void MainForm::setPositionsTableWidget(const Order* order)
 
         QTableWidgetItem* positionIdItem = new QTableWidgetItem(QString::number(positionId));
         positionIdItem->setData(Qt::UserRole, positionId);
-        QTableWidgetItem* descriptionItem = new QTableWidgetItem(descr);
-        QTableWidgetItem* quantityItem = new QTableWidgetItem(quantity);
-        QTableWidgetItem* issueItem = new QTableWidgetItem(issue);
 
         ui.positionsTableWidget->insertRow(i);
         ui.positionsTableWidget->setItem(i, 0, positionIdItem);
-        ui.positionsTableWidget->setItem(i, 1, descriptionItem);
-        ui.positionsTableWidget->setItem(i, 2, quantityItem);
-        ui.positionsTableWidget->setItem(i, 3, issueItem);
+        ui.positionsTableWidget->setItem(i, 1, new QTableWidgetItem(descr));
+        ui.positionsTableWidget->setItem(i, 2, new QTableWidgetItem(quantity));
+        ui.positionsTableWidget->setItem(i, 3, new QTableWidgetItem(issue));
     }
 
     ui.positionsTableWidget->resizeColumnsToContents();
@@ -289,8 +268,8 @@ void MainForm::setPositionsTableWidget(const Order* order)
 void MainForm::setClientCard(int orderId)
 {
     //заполняем карту клиента
-    Order* order = findOrder(orderId);
-    if (Client* client = findClient(order->getClient()))
+    const Order* order = findOrder(orderId);
+    if (const Client* client = findClient(order->getClient()))
     {
         ui.clientNameLineEdit->setText(QString::fromStdString(client->getName()));
         ui.clientPhoneLineEdit->setText(QString::fromStdString(client->getPhone()));
@@ -301,13 +280,12 @@ void MainForm::setClientCard(int orderId)
 void MainForm::setRemark(int orderId)
 {
     //заполняем примечание
-    Order* order = findOrder(orderId);
+    const Order* order = findOrder(orderId);
     QString remark;
-    QString rmrk = QString::fromStdString(order->getRemark());
-    QStringList remarkList = rmrk.split('^');
+    const QString rmrk = QString::fromStdString(order->getRemark());
+    const QStringList remarkList = rmrk.split('^');
 
-    size_t i = 0;
-    for (; i < remarkList.size(); ++i)
+    for (size_t i = 0; i < remarkList.size(); ++i)
     {
         remark.append(remarkList.at(i));
         if (i != (remarkList.size() - 1)) 
@@ -323,21 +301,21 @@ void MainForm::setChangesOrderCard(int orderId)
 
     clearChangesOrderCard();
 
-    if (Order* order = findOrder(orderId))
+    if (const Order* order = findOrder(orderId))
     {
-        if (StaffAccount* createAccount = findAccount(order->getAccountCreate()))
+        if (const StaffAccount* createAccount = findAccount(order->getAccountCreate()))
         {
             ui.createLoginPositionLabel->setText(QString::fromStdString(createAccount->getPosition()));
             ui.createLoginNameLabel->setText(QString::fromStdString(createAccount->getName()));
         }
 
-        if (StaffAccount* editAccount = findAccount(order->getAccountEdit()))
+        if (const StaffAccount* editAccount = findAccount(order->getAccountEdit()))
         {
             ui.editLoginPositionLabel->setText(QString::fromStdString(editAccount->getPosition()));
             ui.editLoginNameLabel->setText(QString::fromStdString(editAccount->getName()));
         }
 
-        if (StaffAccount* availAccount = findAccount(order->getAccountAvailability()))
+        if (const StaffAccount* availAccount = findAccount(order->getAccountAvailability()))
         {
             ui.availLoginPositionLabel->setText(QString::fromStdString(availAccount->getPosition()));
             ui.availLoginNameLabel->setText(QString::fromStdString(availAccount->getName()));
@@ -354,8 +332,6 @@ void MainForm::setChangesOrderCard(int orderId)
 
 void MainForm::clearClientCard()
 {
-    //очищаем карту клиента
-
     ui.clientNameLineEdit->clear();
     ui.clientPhoneLineEdit->clear();
     ui.clientMailLineEdit->clear();
@@ -363,15 +339,11 @@ void MainForm::clearClientCard()
 
 void MainForm::clearRemark()
 {
-    //очищаем примечание
-
     ui.remarkTextEdit->clear();
 }
 
 void MainForm::clearChangesOrderCard()
 {
-    //очищаеми карту изменений заказа
-
     ui.createDateLabel->clear();
     ui.createTimeLabel->clear();
     ui.editDateLabel->clear();
@@ -453,11 +425,11 @@ void MainForm::editOrderSlot()
 {
     //редактируем Заказ
 
-    int currRow = ui.ordersTableWidget->currentRow();
+    const int currRow = ui.ordersTableWidget->currentRow();
 
     if (currRow != -1)
     {
-        int orderId = ui.ordersTableWidget->item(currRow, 0)->data(Qt::UserRole).toInt();
+        const int orderId = ui.ordersTableWidget->item(currRow, 0)->data(Qt::UserRole).toInt();
         Order* order = findOrder(orderId);
         CreateOrderDialog createOrderDialog(this, order);
         createOrderDialog.setWindowTitle("Редактирование заказа");
@@ -484,12 +456,11 @@ void MainForm::removeOrderSlot()
 {
     //удаляем Заказ
 
-    int currRow = ui.ordersTableWidget->currentRow();
+    const int currRow = ui.ordersTableWidget->currentRow();
 
     if (currRow != -1)
     {
         int orderId = ui.ordersTableWidget->item(currRow, 0)->data(Qt::UserRole).toInt();
-        Order* order = findOrder(orderId);
         if (DataBase::removeOrder(orderId))
         {
             auto itOrder = std::remove_if(MainForm::_ordersList.begin(), MainForm::_ordersList.end(), [&orderId](const Order& order) {return order.getId() == orderId; });
@@ -508,13 +479,12 @@ void MainForm::removeOrderSlot()
 void MainForm::printOrderSlot()
 {
     //печать квитанции заказа
-
     int orderId = -1;
-    int currRow = ui.ordersTableWidget->currentRow();
+    const int currRow = ui.ordersTableWidget->currentRow();
     if (currRow != -1)
     {
         orderId = ui.ordersTableWidget->item(currRow, 0)->data(Qt::UserRole).toInt();
-        if (Order* order = findOrder(orderId))
+        if (const Order* order = findOrder(orderId))
         {
             PrintReceiptDialog printDialog(order);
             printDialog.setWindowTitle("Печать квитанции");
@@ -532,8 +502,8 @@ void MainForm::clickOnRowSlot()
 {
     //нажатие на конкретный заказ
 
-    int currRow = ui.ordersTableWidget->currentRow();
-    int orderId = ui.ordersTableWidget->item(currRow, 0)->data(Qt::UserRole).toInt();
+    const int currRow = ui.ordersTableWidget->currentRow();
+    const int orderId = ui.ordersTableWidget->item(currRow, 0)->data(Qt::UserRole).toInt();
     setPositionsTableWidget(findOrder(orderId));
     setClientCard(orderId);
     setRemark(orderId);
@@ -544,17 +514,15 @@ void MainForm::searchOnClientSlot()
 {
     //поиск по клиенту
 
-    QString searchClient = ui.searchLineEdit->text().toLower();
+    const QString searchClient = ui.searchLineEdit->text().toLower();
     _foundOrders.clear();
 
-    size_t i = 0;
-    for (; i < _ordersList.size(); ++i)
+    
+    for (size_t i = 0; i < _ordersList.size(); ++i)
     {
-        QString client = QString::fromStdString(findClient(_ordersList[i].getClient())->getName());
-        client = client.toLower();
+        const QString client = QString::fromStdString(findClient(_ordersList[i].getClient())->getName()).toLower();
 
-        size_t k = 0;
-        for (; k < searchClient.size(); ++k)
+        for (size_t k = 0; k < searchClient.size(); ++k)
         {
             if (k == client.size()) break;
             if (searchClient.at(k) != client.at(k)) break;
@@ -565,19 +533,16 @@ void MainForm::searchOnClientSlot()
         }
     }
 
-    i = 0;
-    for (; i < _ordersList.size(); ++i)
+    for (size_t i = 0; i < _ordersList.size(); ++i)
     {
-        int orderId = _ordersList[i].getId();
-        QString client = QString::fromStdString(findClient(_ordersList[i].getClient())->getName());
-        client = client.toLower();
-        QStringList clientWordsList = client.split(" ");
+        const int orderId = _ordersList[i].getId();
+        const QString client = QString::fromStdString(findClient(_ordersList[i].getClient())->getName()).toLower();
+        const QStringList clientWordsList = client.split(" ");
 
-        size_t n = 1;
-        for (; n < clientWordsList.size(); ++n)
+        for (size_t n = 1; n < clientWordsList.size(); ++n)
         {
-            size_t k = 0;
-            for (; k < searchClient.size(); ++k)
+            
+            for (size_t k = 0; k < searchClient.size(); ++k)
             {
                 if (k == clientWordsList[n].size()) break;
                 if (searchClient.at(k) != clientWordsList[n].at(k)) break;
@@ -605,11 +570,11 @@ void MainForm::slotCustomMenuRequested(const QPoint& pos)
 {
     //контекстное меню
 
-    int row = ui.ordersTableWidget->selectionModel()->currentIndex().row();
+    const int row = ui.ordersTableWidget->selectionModel()->currentIndex().row();
     if (row != -1)
     {
-        int orderId = ui.ordersTableWidget->item(row, 0)->data(Qt::UserRole).toInt();
-        Order* order(findOrder(orderId));
+        const int orderId = ui.ordersTableWidget->item(row, 0)->data(Qt::UserRole).toInt();
+        const Order* order(findOrder(orderId));
         QString newAvailability;
         if (order->getAvailability() == "Готово")
             newAvailability = "В работе";
@@ -634,11 +599,10 @@ void MainForm::slotSetAvailability()
 {
     //устанавливаем "готово/в работе"
 
-    QDateTime currDateTime = QDateTime::currentDateTime();
-    int row = ui.ordersTableWidget->selectionModel()->currentIndex().row();
+    const int row = ui.ordersTableWidget->selectionModel()->currentIndex().row();
     if (row != -1)
     {
-        int orderId = ui.ordersTableWidget->item(row, 0)->data(Qt::UserRole).toInt();
+        const int orderId = ui.ordersTableWidget->item(row, 0)->data(Qt::UserRole).toInt();
         Order* order = findOrder(orderId);
 
         if (order->getAvailability() == "В работе")
@@ -646,7 +610,7 @@ void MainForm::slotSetAvailability()
         else
             order->setAvailability("В работе");
         order->setAccountAvailability(_currentAccount->getId());
-        order->setDateTimeAvailability(currDateTime);
+        order->setDateTimeAvailability(QDateTime::currentDateTime());
 
         if (DataBase::editOrder(order))
         {

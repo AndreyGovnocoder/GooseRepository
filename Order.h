@@ -10,11 +10,11 @@ class Order
 {
 public:
 	Order() = default;
-	Order(int id) { _id = id; };
+	Order(int id) : _id(id) {};
 	~Order() = default;
 	void setId(int id) { _id = id; };
 	void setDate(const QDate& date) { _date = date; };
-	void setClient(const int clientId) { _clientId = clientId; };
+	void setClient(int clientId) { _clientId = clientId; };
 	void setPayment(const std::string& payment) { _payment = payment; };
 	void setAmount(const std::string& amount) { _amount = amount; };
 	void setManager(int managerId) { _managerId = managerId; };
@@ -22,13 +22,14 @@ public:
 	void setPositionsList(const std::vector<OrderPosition> positionsList) { _positionsList = positionsList; };
 	void setAvailability(const std::string& availability) { _availability = availability; };
 	void setRemark(const std::string& remark) { _remark = remark; };
-	void setAccountCreate(const int accountCreate) { _accountCreate = accountCreate; };
-	void setAccountEdit(const int accountEdit) { _accountEdit = accountEdit; };
-	void setAccountAvailability(const int accountAvailability) { _accountAvailability = accountAvailability; };
+	void setAccountCreate(int accountCreate) { _accountCreate = accountCreate; };
+	void setAccountEdit(int accountEdit) { _accountEdit = accountEdit; };
+	void setAccountAvailability(int accountAvailability) { _accountAvailability = accountAvailability; };
 	void setDateTimeCreate(const QDateTime& dateTimeCreate){ _dateTimeCreate = dateTimeCreate; };
 	void setDateTimeEdit(const QDateTime& dateTimeEdit) { _dateTimeEdit = dateTimeEdit; };
 	void setDateTimeAvailability(const QDateTime& dateTimeAvailability) { _dateTimeAvailability = dateTimeAvailability; };
-	int getId()  const { return _id; };
+
+	int getId() const { return _id; };
 	const QDate& getDate() const { return _date; };
 	int getClient() const { return _clientId; };
 	const std::string& getPayment() const { return _payment; };

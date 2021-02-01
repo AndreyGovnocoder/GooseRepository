@@ -23,6 +23,7 @@ public:
     DataBase() = default;
     ~DataBase() = default;
 
+    static const QString DB_NAME;
     static const QString TABLE_ACCOUNTS;
     static const QString TABLE_CLIENTS;
     static const QString TABLE_STAFFS;
@@ -30,32 +31,34 @@ public:
     static const QString TABLE_POSITIONS;
     static const QString TABLE_RECEIPT_COUNT;
 
-    static int getLastId(const QString&);
+    static QSqlDatabase getDatabase() { return QSqlDatabase::database(DB_NAME); }
+    static bool initDatabase();
+    static int getLastId(const QString& table);
     static bool incrementReceiptCount();
     static int getReceiptCount();
     static std::vector<Client> getClientsList();
-    static bool addClient(const Client&);
-    static bool editClient(const Client&);
-    static bool editClient(const Client*);
-    static bool removeClient(int);
+    static bool addClient(const Client& newClient);
+    static bool editClient(const Client& client);
+    static bool editClient(const Client* client);
+    static bool removeClient(int clientId);
     static std::vector<Staff> getStaffList();
     static bool addStaff(const Staff&);
     static bool editStaff(const Staff&);
     static bool editStaff(const Staff*);
-    static bool removeStaff(int);    
+    static bool removeStaff(int staffId);    
     static std::vector<Order> getOrdersList();
     static bool addOrder(const Order&);
     static bool editOrder(const Order*);
     static bool editOrder(const Order&);
-    static bool removeOrder(int);
+    static bool removeOrder(int orderId);
     static std::vector<OrderPosition> getOrderPositionsList(int);
     static std::vector<OrderPosition> getAllPositions();
-    static bool addPosition(int, const OrderPosition&);
-    static bool editPosition(const OrderPosition&);
-    static bool removePositionById(int);
-    static bool removePositionByIdOrder(int);
+    static bool addPosition(int orderId, const OrderPosition& position);
+    static bool editPosition(const OrderPosition& editPosition);
+    static bool removePositionById(int idPosition);
+    static bool removePositionByIdOrder(int idOrder);
     static std::vector<StaffAccount> getAccountsList();
-    static bool addAccount(const StaffAccount&);    
+    static bool addAccount(const StaffAccount& newAccount);
 };
 
 #endif  DATABASE_H

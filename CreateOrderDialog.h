@@ -22,14 +22,13 @@ public:
 	~CreateOrderDialog() = default;
 	Order* getEditOrder() { return _editOrder; };
 	Order& getNewOrder() { return _newOrder; }
-	void setPositionsList(const std::vector<OrderPosition>&);
+	void setPositionsList(const std::vector<OrderPosition>& positionsList);
 	void setAccount(const StaffAccount* account) { _account = account; };
 	const StaffAccount* getAccount() const { return _account; };
 	bool _isOk = false;
 
 private:
 	const StaffAccount* _account;
-	bool _isEditOrder;
 	Order* _editOrder;
 	Order _newOrder;
 	void setCurrentDate();

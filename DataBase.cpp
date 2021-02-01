@@ -1,7 +1,7 @@
 #include "DataBase.h"
 #include <QtWidgets/qmessagebox.h>
 
-
+const QString DataBase::DB_NAME("OrderBasePrint_dataBase.db");
 const QString DataBase::TABLE_ACCOUNTS("accounts");
 const QString DataBase::TABLE_CLIENTS("clients");
 const QString DataBase::TABLE_STAFFS("staffs");
@@ -9,23 +9,39 @@ const QString DataBase::TABLE_ORDERS("orders");
 const QString DataBase::TABLE_POSITIONS("positions");
 const QString DataBase::TABLE_RECEIPT_COUNT("receiptCounter");
 
+bool DataBase::initDatabase()
+{
+    auto db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(DB_NAME);
+    const bool ok = db.open();
+    if (!ok) 
+    {
+        QString error = db.lastError().text();
+        QMessageBox::warning(0, "", error);
+    }
+    return ok;
+}
+
 int DataBase::getLastId(const QString& table)
 {
     // получаем последний id в таблице БД
 
     int lastId;
 
-    QSqlQuery query("SELECT _id FROM " + table);
+    QSqlQuery query(getDatabase());
+    query.exec("SELECT _id FROM " + table + " ORDER BY _id DESC LIMIT 1");
 
-    query.last();
-    lastId = query.value(0).toInt();
+    if (query.first())
+        lastId = query.value(0).toInt();
+
     return query.exec() ? lastId : -1;
 }
 
 bool DataBase::incrementReceiptCount()
 {
     int count = 0;
-    QSqlQuery query("SELECT * FROM " + TABLE_RECEIPT_COUNT + " WHERE _id=1");
+    QSqlQuery query(getDatabase());
+    query.exec("SELECT * FROM " + TABLE_RECEIPT_COUNT + " WHERE _id=1");
 
     while (query.next())
         count = query.value(1).toInt();
@@ -40,7 +56,8 @@ bool DataBase::incrementReceiptCount()
 int DataBase::getReceiptCount()
 {
     int count = 0;
-    QSqlQuery query("SELECT * FROM " + TABLE_RECEIPT_COUNT + " WHERE _id=1");
+    QSqlQuery query(getDatabase());
+    query.exec("SELECT * FROM " + TABLE_RECEIPT_COUNT + " WHERE _id=1");
 
     while (query.next())
         count = query.value(1).toInt();
@@ -50,10 +67,17 @@ int DataBase::getReceiptCount()
 std::vector<Client> DataBase::getClientsList()
 {
     //получаем список клиентов из БД
+    int rowCount = 0;
+    QSqlQuery query(getDatabase());
+    query.exec("SELECT COUNT(*) FROM " + TABLE_CLIENTS);
+    query.first();
+    rowCount = query.value(0).toInt();
 
     std::vector<Client> clientsList;
+    clientsList.reserve(rowCount);
 
-    QSqlQuery query("SELECT * FROM " + TABLE_CLIENTS);
+    query.exec("SELECT * FROM " + TABLE_CLIENTS);
+    
     while (query.next())
     {
         Client client(
@@ -72,7 +96,7 @@ bool DataBase::addClient(const Client& newClient)
 {
     //добавляем клиента в БД
 
-    QSqlQuery query;
+    QSqlQuery query(getDatabase());
     query.prepare("INSERT INTO " + TABLE_CLIENTS + " (name, phone, mail, active)"
         "VALUES (:name, :phone, :mail, :active);");
     query.bindValue(":name", QString::fromStdString(newClient.getName()));
@@ -87,7 +111,7 @@ bool DataBase::editClient(const Client& client)
 {
     //редактируем клиента
 
-    QSqlQuery query;
+    QSqlQuery query(getDatabase());
     query.prepare("UPDATE " + TABLE_CLIENTS + 
         " SET name = ?, phone = ?, mail = ?, active = ? " +  
         " WHERE _id=" + QString::number(client.getId()));
@@ -103,7 +127,7 @@ bool DataBase::editClient(const Client* client)
 {
     //редактируем клиента
 
-    QSqlQuery query;
+    QSqlQuery query(getDatabase());
     query.prepare("UPDATE " + TABLE_CLIENTS +
         " SET name = ?, phone = ?, mail = ?, active = ? " +
         " WHERE _id=" + QString::number(client->getId()));
@@ -119,18 +143,24 @@ bool DataBase::removeClient(int id)
 {
     //удаляем клиента из БД
 
-    QSqlQuery query("DELETE FROM " + TABLE_CLIENTS + " WHERE _id=" + QString::number(id));
+    QSqlQuery query(getDatabase());
 
-    return query.exec();
+    return query.exec("DELETE FROM " + TABLE_CLIENTS + " WHERE _id=" + QString::number(id));
 }
 
 std::vector<Staff> DataBase::getStaffList()
 {
     //получаем список сотрудников из БД
+    int rowCount = 0;
+    QSqlQuery query(getDatabase());
+    query.exec("SELECT COUNT(*) FROM " + TABLE_STAFFS);
+    query.first();
+    rowCount = query.value(0).toInt();
 
     std::vector<Staff> staffList;
+    staffList.reserve(rowCount);
 
-    QSqlQuery query("SELECT * FROM " + TABLE_STAFFS);
+    query.exec("SELECT * FROM " + TABLE_STAFFS);
     while (query.next())
     {
         Staff staff(
@@ -148,7 +178,7 @@ bool DataBase::addStaff(const Staff& newStaff)
 {
     //добавляем сотрудника в БД
 
-    QSqlQuery query;
+    QSqlQuery query(getDatabase());
     query.prepare("INSERT INTO " + TABLE_STAFFS + " (name, position, active)"
         "VALUES (:name, :position, :active);");
     query.bindValue(":name", QString::fromStdString(newStaff.getName()));
@@ -162,7 +192,7 @@ bool DataBase::editStaff(const Staff& editStaff)
 {
     //редактируем сотрудника
 
-    QSqlQuery query;
+    QSqlQuery query(getDatabase());
     query.prepare("UPDATE " + TABLE_STAFFS + " SET name = ?, position = ?, active = ?  WHERE _id=" + QString::number(editStaff.getId()));
     query.addBindValue(QString::fromStdString(editStaff.getName()));
     query.addBindValue(QString::fromStdString(editStaff.getPosition()));
@@ -175,7 +205,7 @@ bool DataBase::editStaff(const Staff* editStaff)
 {
     //редактируем сотрудника
 
-    QSqlQuery query;
+    QSqlQuery query(getDatabase());
     query.prepare("UPDATE " + TABLE_STAFFS + " SET name = ?, position = ?, active = ?  WHERE _id=" + QString::number(editStaff->getId()));
     query.addBindValue(QString::fromStdString(editStaff->getName()));
     query.addBindValue(QString::fromStdString(editStaff->getPosition()));
@@ -188,18 +218,24 @@ bool DataBase::removeStaff(int staffId)
 {
     //удаляем сотрудника из БД
 
-    QSqlQuery query("DELETE FROM " + TABLE_STAFFS + " WHERE _id=" + QString::number(staffId));
+    QSqlQuery query(getDatabase());
 
-    return query.exec();
+    return query.exec("DELETE FROM " + TABLE_STAFFS + " WHERE _id=" + QString::number(staffId));
 }
 
 std::vector<Order> DataBase::getOrdersList()
 {
     //получаем список заказов
+    int rowCount = 0;
+    QSqlQuery query(getDatabase());
+    query.exec("SELECT COUNT(*) FROM " + TABLE_ORDERS);
+    query.first();
+    rowCount = query.value(0).toInt();
 
     std::vector<Order> ordersList;
+    ordersList.reserve(rowCount);
 
-    QSqlQuery query("SELECT * FROM " + TABLE_ORDERS);
+    query.exec("SELECT * FROM " + TABLE_ORDERS);
     while (query.next())
     {
         Order order;
@@ -228,8 +264,8 @@ std::vector<Order> DataBase::getOrdersList()
 bool DataBase::addOrder(const Order& order)
 {
     //добавляем заказ в БД
-    bool succeful = false;
-    QSqlQuery query;
+    bool successful = false;
+    QSqlQuery query(getDatabase());
     query.prepare("INSERT INTO " + TABLE_ORDERS +
         " (date, client, amount, payment, manager, designer, availability, remark, loginCreate, loginEdit, loginAvailability, dateTimeCreate, dateTimeEdit, dateTimeAvailability)"
         " VALUES (:date, :client, :amount, :payment, :manager, :designer, :availability, :remark, :loginCreate, :loginEdit, :loginAvailability, :dateTimeCreate, :dateTimeEdit, :dateTimeAvailability);");
@@ -249,16 +285,14 @@ bool DataBase::addOrder(const Order& order)
     query.bindValue(":dateTimeAvailability", order.getDateTimeAvailability());
 
     if (query.exec())
-        succeful = true;
+        successful = true;
     else
         return false;
 
-    if (succeful)
+    if (successful)
     {
-        size_t i = 0;
         int orderId = DataBase::getLastId(TABLE_ORDERS);
-        QMessageBox::warning(0, "idOrder", QString::number(orderId));
-        for (; i < order.getPositionsList().size(); ++i)
+        for (size_t i = 0; i < order.getPositionsList().size(); ++i)
             DataBase::addPosition(DataBase::getLastId(TABLE_ORDERS), order.getPositionsList()[i]);
         return true;        
     }
@@ -269,8 +303,8 @@ bool DataBase::addOrder(const Order& order)
 bool DataBase::editOrder(const Order* editOrder)
 {
     //редактируем заказ
-    bool succeful = false;
-    QSqlQuery query;
+    bool successful = false;
+    QSqlQuery query(getDatabase());
     query.prepare("UPDATE " + TABLE_ORDERS +
         " SET date=?, client=?, amount=?, payment=?, manager=?, designer=?, availability=?, remark=?, loginCreate=?, loginEdit=?, loginAvailability=?, dateTimeCreate=?, dateTimeEdit=?, dateTimeAvailability=?"
         "  WHERE _id=" + QString::number(editOrder->getId()));
@@ -290,11 +324,11 @@ bool DataBase::editOrder(const Order* editOrder)
     query.addBindValue(editOrder->getDateTimeAvailability());
 
     if (query.exec())
-        succeful = true;
+        successful = true;
     else
         return false;
 
-    if (succeful)
+    if (successful)
     {
         DataBase::removePositionByIdOrder(editOrder->getId());
 
@@ -310,8 +344,8 @@ bool DataBase::editOrder(const Order* editOrder)
 bool DataBase::editOrder(const Order& editOrder)
 {
     //редактируем заказ
-    bool succeful = false;
-    QSqlQuery query;
+    bool successful = false;
+    QSqlQuery query(getDatabase());
     query.prepare("UPDATE " + TABLE_ORDERS +
         " SET date=?, client=?, amount=?, payment=?, manager=?, designer=?, availability=?, remark=?, loginCreate=?, loginEdit=?, loginAvailability=?, dateTimeCreate=?, dateTimeEdit=?, dateTimeAvailability=?"
         "  WHERE _id=" + QString::number(editOrder.getId()));
@@ -331,31 +365,27 @@ bool DataBase::editOrder(const Order& editOrder)
     query.addBindValue(editOrder.getDateTimeAvailability());
 
     if (query.exec())
-        succeful = true;
+        successful = true;
     else
         return false;
 
-    if (succeful)
-    {
-        DataBase::removePositionByIdOrder(editOrder.getId());
+    if (!successful) return false;
 
-        size_t i = 0;
-        for (; i < editOrder.getPositionsList().size(); ++i)
-            DataBase::addPosition(editOrder.getId(), editOrder.getPositionsList()[i]);
+    DataBase::removePositionByIdOrder(editOrder.getId());
 
-        return true;
-    }
-    else
-        return false;
+    for (size_t i = 0; i < editOrder.getPositionsList().size(); ++i)
+        DataBase::addPosition(editOrder.getId(), editOrder.getPositionsList()[i]);
+
+    return true;
 }
 
 bool DataBase::removeOrder(int orderId)
 {
     //удаляем Заказ из БД
 
-    QSqlQuery query("DELETE FROM " + TABLE_ORDERS + " WHERE _id=" + QString::number(orderId));
+    QSqlQuery query(getDatabase());
 
-    if (!query.exec())
+    if (!query.exec("DELETE FROM " + TABLE_ORDERS + " WHERE _id=" + QString::number(orderId)))
         return false;
     else
     {
@@ -367,10 +397,16 @@ bool DataBase::removeOrder(int orderId)
 std::vector<OrderPosition> DataBase::getOrderPositionsList(int orderId)
 {
     //получаем список позиций по id заказа
+    int rowCount = 0;
+    QSqlQuery query(getDatabase());
+    query.exec("SELECT COUNT(*) FROM " + TABLE_POSITIONS);
+    query.first();
+    rowCount = query.value(0).toInt();
 
     std::vector<OrderPosition> positionsList;
+    positionsList.reserve(rowCount);
 
-    QSqlQuery query("SELECT * FROM " + TABLE_POSITIONS + " WHERE idOrder=" + QString::number(orderId));
+    query.exec("SELECT * FROM " + TABLE_POSITIONS + " WHERE idOrder=" + QString::number(orderId));
     while (query.next())
     {
         OrderPosition position;
@@ -389,10 +425,17 @@ std::vector<OrderPosition> DataBase::getOrderPositionsList(int orderId)
 std::vector<OrderPosition> DataBase::getAllPositions()
 {
     //получаем список позиций всех заказов
+    int rowCount = 0;
+
+    QSqlQuery query(getDatabase());
+    query.exec("SELECT COUNT(*) FROM " + TABLE_POSITIONS);
+    query.first();
+    rowCount = query.value(0).toInt();
 
     std::vector<OrderPosition> positionsList;
+    positionsList.reserve(rowCount);
 
-    QSqlQuery query("SELECT * FROM " + TABLE_POSITIONS);
+    query.exec("SELECT * FROM " + TABLE_POSITIONS);
     while (query.next())
     {
         OrderPosition position;
@@ -410,7 +453,7 @@ std::vector<OrderPosition> DataBase::getAllPositions()
 
 bool DataBase::addPosition(int orderId, const OrderPosition& position)
 {
-    QSqlQuery query;
+    QSqlQuery query(getDatabase());
     query.prepare("INSERT INTO " + TABLE_POSITIONS + " (idOrder, description, quantity, issue)"
         " VALUES (:idOrder, :description, :quantity, :issue);");
 
@@ -423,7 +466,7 @@ bool DataBase::addPosition(int orderId, const OrderPosition& position)
 
 bool DataBase::editPosition(const OrderPosition& editPosition)
 {
-    QSqlQuery query;
+    QSqlQuery query(getDatabase());
     query.prepare("UPDATE " + TABLE_POSITIONS +
         " SET description=?, quantity=?, issue=?"
         "  WHERE _id=" + QString::number(editPosition.getIdPosition()));
@@ -436,8 +479,8 @@ bool DataBase::editPosition(const OrderPosition& editPosition)
 
 bool DataBase::removePositionById(int idPosition)
 {
-    QSqlQuery query("DELETE FROM " + TABLE_POSITIONS + " WHERE _id=" + QString::number(idPosition));
-    return query.exec();
+    QSqlQuery query(getDatabase());
+    return query.exec("DELETE FROM " + TABLE_POSITIONS + " WHERE _id=" + QString::number(idPosition));
 }
 
 bool DataBase::removePositionByIdOrder(int idOrder)
@@ -448,9 +491,16 @@ bool DataBase::removePositionByIdOrder(int idOrder)
 
 std::vector<StaffAccount> DataBase::getAccountsList()
 {
-    std::vector<StaffAccount> accountsList;
+    int rowCount = 0;
+    QSqlQuery query(getDatabase());
+    query.exec("SELECT COUNT(*) FROM " + TABLE_ACCOUNTS);
+    query.first();
+    rowCount = query.value(0).toInt();
 
-    QSqlQuery query("SELECT * FROM " + TABLE_ACCOUNTS);
+    std::vector<StaffAccount> accountsList;
+    accountsList.reserve(rowCount);
+
+    query.exec("SELECT * FROM " + TABLE_ACCOUNTS);
     while (query.next())
     {
         StaffAccount account;
@@ -465,17 +515,17 @@ std::vector<StaffAccount> DataBase::getAccountsList()
     return accountsList;
 }
 
-bool DataBase::addAccount(const StaffAccount& account)
+bool DataBase::addAccount(const StaffAccount& newAccount)
 {
     //сохраняем логин в БД
 
-    QSqlQuery query;
+    QSqlQuery query(getDatabase());
     query.prepare("INSERT INTO " + TABLE_ACCOUNTS + " (name, position, login, password)"
         "VALUES (:name, :position, :login, :password);");
-    query.bindValue(":name", QString::fromStdString(account.getName()));
-    query.bindValue(":position", QString::fromStdString(account.getPosition()));
-    query.bindValue(":login", QString::fromStdString(account.getLogin()));
-    query.bindValue(":password", QString::fromStdString(account.getPassword()));
+    query.bindValue(":name", QString::fromStdString(newAccount.getName()));
+    query.bindValue(":position", QString::fromStdString(newAccount.getPosition()));
+    query.bindValue(":login", QString::fromStdString(newAccount.getLogin()));
+    query.bindValue(":password", QString::fromStdString(newAccount.getPassword()));
 
     return query.exec();
 }
