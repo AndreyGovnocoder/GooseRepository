@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>AddStaffForm</class>
- <widget class="QDialog" name="AddStaffForm">
+ <class>AddStaffDialog</class>
+ <widget class="QDialog" name="AddStaffDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>371</width>
+    <width>374</width>
     <height>152</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>AddStaffForm</string>
+   <string>AddStaffDialog</string>
   </property>
   <widget class="QWidget" name="gridLayoutWidget">
    <property name="geometry">
@@ -67,7 +67,7 @@
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>40</height>
+        <height>0</height>
        </size>
       </property>
       <property name="text">
@@ -93,7 +93,7 @@
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>40</height>
+        <height>0</height>
        </size>
       </property>
       <property name="text">
@@ -110,32 +110,32 @@
   <connection>
    <sender>acceptBtn</sender>
    <signal>clicked()</signal>
-   <receiver>AddStaffForm</receiver>
+   <receiver>AddStaffDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>56</x>
-     <y>112</y>
+     <x>78</x>
+     <y>144</y>
     </hint>
     <hint type="destinationlabel">
-     <x>124</x>
-     <y>95</y>
+     <x>123</x>
+     <y>174</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>cancelBtn</sender>
    <signal>clicked()</signal>
-   <receiver>AddStaffForm</receiver>
+   <receiver>AddStaffDialog</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>306</x>
-     <y>110</y>
+     <x>312</x>
+     <y>146</y>
     </hint>
     <hint type="destinationlabel">
-     <x>237</x>
-     <y>99</y>
+     <x>265</x>
+     <y>162</y>
     </hint>
    </hints>
   </connection>

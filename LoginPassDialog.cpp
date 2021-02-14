@@ -1,64 +1,42 @@
 #include "LoginPassDialog.h"
-#include "CreateLoginForm.h"
-#include "StaffLogin.h"
-#include "DataBase.h"
-#include <QtWidgets\qmessagebox.h>
 
-LoginPassDialog::LoginPassDialog(QWidget *parent)
+
+LoginPassDialog::LoginPassDialog(QWidget* parent)
 	: QDialog(parent)
 {
 	setupUi(this);
 }
 
-void LoginPassDialog::createLoginSlot() 
+void LoginPassDialog::createAccountSlot()
 {
 	//создание учетной записи
-	
-	CreateLoginForm *create = new CreateLoginForm;
-	create->setWindowTitle("Создание учетной записи");
-	create->setWindowModality(Qt::WindowModality::ApplicationModal);
-	create->setAttribute(Qt::WA_DeleteOnClose);
-	create->show();
+
+	CreateAccountForm* createAcc = new CreateAccountForm;
+	createAcc->setWindowTitle("Создание учетной записи");
+	createAcc->setWindowModality(Qt::WindowModality::ApplicationModal);
+	createAcc->setAttribute(Qt::WA_DeleteOnClose);
+	createAcc->show();
 }
 
-void LoginPassDialog::checkLoginPassSlot() 
+void LoginPassDialog::checkLoginPassSlot()
 {
 	// сверяем логин и пароль
 
-	std::vector<StaffLogin> loginsList(DataBase::getLoginsList());
-	StaffLogin login;
-	login.setLogin(loginLineEdit->text().toStdString());
-	login.setPassword(passwordLineEdit->text().toStdString());
-
-	for (int i = 0; i < loginsList.size(); ++i) 
+	std::vector<StaffAccount>& accountsList = DataBase::getAccountsList();
+	const std::string login = loginLineEdit->text().toStdString();
+	const std::string password = passwordLineEdit->text().toStdString();
+	auto it = std::find_if(accountsList.begin(), accountsList.end(), [&login](const StaffAccount& account) {return account.getLogin() == login; });
+	if (it != accountsList.end())
 	{
-		if (login.getLogin() == loginsList[i].getLogin()) 
+		StaffAccount* account = &(*it);
+		if (password == account->getPassword())
 		{
-			if (login.getPassword() == loginsList[i].getPassword()) 
-			{
-				login.setId(loginsList[i].getId());
-				login.setName(loginsList[i].getName());
-				login.setPosition(loginsList[i].getPosition());
-				setLogin(login);
-				accept();
-				break;
-			}
-			else 
-			{
-				//QMessageBox::warning(this, "Ошибка", "Неверный пароль");
-				break;
-			}
+			setAccountId(account->getId());
+			accept();
 		}
-
-		if (i == (loginsList.size() - 1)) 
-		{
-			//QMessageBox::warning(this, "Ошибка", "Неверный логин");
-		}
+		else
+			QMessageBox::critical(this, "Ошибка", "Неверный пароль");
 	}
+	else
+		QMessageBox::critical(this, "Ошибка", "Неверный логин");
 }
-
-void LoginPassDialog::setLogin(const StaffLogin& login) 
-{
-	_login = login;	
-}
-

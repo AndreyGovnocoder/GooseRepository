@@ -4,16 +4,33 @@
 #include "ui_CreateOrderDialog.h"
 #include "OrderPosition.h"
 #include "Order.h"
-#include "StaffLogin.h"
+#include "StaffAccount.h"
 #include "MainForm.h"
+#include "SetDateDialog.h"
+#include "Client.h"
+#include "DataBase.h"
+#include "qmessagebox.h"
+#include <qcompleter.h>
 
 class CreateOrderDialog : public QDialog, public Ui::CreateOrderDialog
 {
 	Q_OBJECT
 
+public:
+	CreateOrderDialog(QWidget* parent);
+	CreateOrderDialog(QWidget* parent, Order* editOrder);
+	~CreateOrderDialog() = default;
+	Order* getEditOrder() { return _editOrder; };
+	Order& getNewOrder() { return _newOrder; }
+	void setPositionsList(const std::vector<OrderPosition>& positionsList);
+	void setAccount(const StaffAccount* account) { _account = account; };
+	const StaffAccount* getAccount() const { return _account; };
+	bool _isOk = false;
+
 private:
-	StaffLogin _login;
-	int _idEditOrder;
+	const StaffAccount* _account;
+	Order* _editOrder;
+	Order _newOrder;
 	void setCurrentDate();
 	void setClientsList();
 	void setPayment();
@@ -23,7 +40,9 @@ private:
 	void addPosition();
 	std::vector<OrderPosition> getPositionsList();
 	std::string getRemark();
-	Order getOrder();
+	void setEditOrder();
+	void setEditOrderToUI();
+	void setNewOrder();
 
 private slots:
 	void openCalendarSlot();
@@ -31,12 +50,4 @@ private slots:
 	void addPositionSlot();
 	void removePositionSlot();
 	void saveChangesSlot();
-
-public:
-	CreateOrderDialog(QWidget* parent);
-	~CreateOrderDialog() = default;
-	void setPositionsList(const std::vector<OrderPosition>&);
-	void setIdEditOrder(int idEditOrder) { _idEditOrder = idEditOrder; };
-	void setLogin(const StaffLogin& login)  { _login = login; };
-	const StaffLogin& getLogin() const { return _login; };
 };

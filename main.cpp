@@ -1,30 +1,38 @@
 #include "MainForm.h"
+#include <QtSql>
 #include <QtWidgets/QApplication>
 #include "LoginPassDialog.h"
+#include <QSqlDatabase>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    
-    LoginPassDialog loginDialog;
+ 
+    LoginPassDialog loginPassDialog;
     bool launchApp = false;
 
-    if (loginDialog.exec()) 
-    {
+    if (!QFile("OrderBasePrint_dataBase.db").exists())
+        QMessageBox::warning(0, "", "no file db");
+    else
+        DataBase::initDatabase();  
+
+    loginPassDialog.setWindowTitle("Авторизация");
+    if (loginPassDialog.exec())
         launchApp = true;
-    }
     else 
     {
-        a.quit();
+        a.quit();        
         return 0;
     }  
 
     if (launchApp)
     {
-        MainForm mainForm;
-        mainForm.setLogin(loginDialog.getLogin());
-        mainForm.setWindowTitle(mainForm.windowTitle() + "  Учетная запись: " + QString::fromStdString(loginDialog.getLogin().getPosition()) + " " + QString::fromStdString(loginDialog.getLogin().getName()));
+        MainForm mainForm(loginPassDialog.getAccountId());
         mainForm.show();
-        return a.exec();
+        
+        const int q = a.exec();
+
+        return q;
     }
 }
+

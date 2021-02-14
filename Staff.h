@@ -4,14 +4,9 @@
 
 class Staff 
 {
-private:
-	int _id;
-	std::string _name;
-	std::string _position;
-
 public:
-	Staff(int, const std::string&, const std::string&);
-	Staff(const std::string&, const std::string&);
+	Staff(int, const std::string&, const std::string&, const bool);
+	Staff(const std::string&, const std::string&, const bool);
 	Staff(int);
 	Staff() = default;
 	~Staff() = default;
@@ -22,4 +17,12 @@ public:
 	const std::string& getName() const { return _name; };
 	void setPosition(const std::string& staffPosition) { _position = staffPosition; };
 	const std::string& getPosition() const { return _position; };
+	void setActive(bool active) { _active = active; }
+	bool isActive() const { return _active; }
+
+private:
+	int _id;
+	std::string _name;
+	std::string _position;
+	bool _active;
 };

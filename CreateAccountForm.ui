@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>CreateLoginForm</class>
- <widget class="QWidget" name="CreateLoginForm">
+ <class>CreateAccountForm</class>
+ <widget class="QWidget" name="CreateAccountForm">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -24,7 +24,7 @@
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QPushButton" name="createLoginBtn">
+     <widget class="QPushButton" name="createAccountBtn">
       <property name="text">
        <string>Создать</string>
       </property>
@@ -94,6 +94,9 @@
        <property name="text">
         <string>Логин</string>
        </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
       </widget>
      </item>
      <item row="1" column="0">
@@ -105,6 +108,9 @@
        </property>
        <property name="text">
         <string>Пароль</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
@@ -180,6 +186,9 @@
        <property name="text">
         <string>Имя</string>
        </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
       </widget>
      </item>
      <item row="1" column="0">
@@ -191,6 +200,9 @@
        </property>
        <property name="text">
         <string>Должность</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
@@ -211,25 +223,9 @@
  <resources/>
  <connections>
   <connection>
-   <sender>createLoginBtn</sender>
-   <signal>clicked()</signal>
-   <receiver>CreateLoginForm</receiver>
-   <slot>addLoginToDBSlot()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>73</x>
-     <y>308</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>129</x>
-     <y>288</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>cancelBtn</sender>
    <signal>clicked()</signal>
-   <receiver>CreateLoginForm</receiver>
+   <receiver>CreateAccountForm</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -242,8 +238,24 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>createAccountBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>CreateAccountForm</receiver>
+   <slot>addAccountToDBSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>77</x>
+     <y>307</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>125</x>
+     <y>285</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
-  <slot>addLoginToDBSlot()</slot>
+  <slot>addAccountToDBSlot()</slot>
  </slots>
 </ui>

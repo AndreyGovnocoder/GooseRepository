@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1055</width>
-    <height>807</height>
+    <width>912</width>
+    <height>849</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,10 +17,10 @@
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>710</y>
+      <x>10</x>
+      <y>760</y>
       <width>891</width>
-      <height>42</height>
+      <height>31</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout">
@@ -28,38 +28,12 @@
       <widget class="QPushButton" name="createOrderBtn">
        <property name="minimumSize">
         <size>
-         <width>80</width>
-         <height>40</height>
+         <width>90</width>
+         <height>23</height>
         </size>
        </property>
        <property name="text">
-        <string>Создать</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="editOrderBtn">
-       <property name="minimumSize">
-        <size>
-         <width>80</width>
-         <height>40</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Редактировать</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="deleteOrderBtn">
-       <property name="minimumSize">
-        <size>
-         <width>80</width>
-         <height>40</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Удалить</string>
+        <string>Создать заказ</string>
        </property>
       </widget>
      </item>
@@ -80,12 +54,12 @@
       <widget class="QPushButton" name="printBtn">
        <property name="minimumSize">
         <size>
-         <width>0</width>
-         <height>40</height>
+         <width>110</width>
+         <height>23</height>
         </size>
        </property>
        <property name="text">
-        <string>Печать</string>
+        <string>Печать квитанции</string>
        </property>
       </widget>
      </item>
@@ -94,10 +68,10 @@
    <widget class="QTableWidget" name="ordersTableWidget">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>36</y>
-      <width>881</width>
-      <height>291</height>
+      <x>10</x>
+      <y>56</y>
+      <width>891</width>
+      <height>321</height>
      </rect>
     </property>
     <property name="selectionMode">
@@ -174,27 +148,11 @@
      </property>
     </column>
    </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>920</x>
-      <y>620</y>
-      <width>101</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>TextLabel</string>
-    </property>
-    <property name="wordWrap">
-     <bool>true</bool>
-    </property>
-   </widget>
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>335</y>
+      <x>10</x>
+      <y>385</y>
       <width>431</width>
       <height>231</height>
      </rect>
@@ -213,7 +171,7 @@
        <x>10</x>
        <y>20</y>
        <width>411</width>
-       <height>192</height>
+       <height>201</height>
       </rect>
      </property>
      <property name="verticalScrollMode">
@@ -247,9 +205,9 @@
    <widget class="QGroupBox" name="clientCardGroupBox">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>335</y>
-      <width>431</width>
+      <x>450</x>
+      <y>385</y>
+      <width>451</width>
       <height>131</height>
      </rect>
     </property>
@@ -266,7 +224,7 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>371</width>
+       <width>431</width>
        <height>101</height>
       </rect>
      </property>
@@ -279,6 +237,9 @@
         <property name="text">
          <string>Клиент</string>
         </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
        </widget>
       </item>
       <item row="1" column="0">
@@ -286,12 +247,18 @@
         <property name="text">
          <string>Телефон</string>
         </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
        </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="clientMailLabel">
         <property name="text">
          <string>E-mail</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
@@ -325,8 +292,8 @@
    <widget class="QGroupBox" name="remarkGroupBox">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>570</y>
+      <x>10</x>
+      <y>620</y>
       <width>431</width>
       <height>131</height>
      </rect>
@@ -353,45 +320,12 @@
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="gridLayoutWidget_2">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>0</y>
-      <width>421</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="searchLabel">
-       <property name="font">
-        <font>
-         <pointsize>12</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Поиск по клиенту:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="searchLineEdit">
-       <property name="font">
-        <font>
-         <pointsize>12</pointsize>
-        </font>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
    <widget class="QGroupBox" name="changesOrderGroupBox">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>480</y>
-      <width>431</width>
+      <x>450</x>
+      <y>530</y>
+      <width>451</width>
       <height>221</height>
      </rect>
     </property>
@@ -403,7 +337,7 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>411</width>
+       <width>431</width>
        <height>191</height>
       </rect>
      </property>
@@ -436,6 +370,9 @@
        <widget class="QLabel" name="changeAvailabilityLabel">
         <property name="text">
          <string>Изменение (готово/в работе)</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
@@ -509,6 +446,9 @@
         <property name="text">
          <string>Редактирование заказа</string>
         </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
        </widget>
       </item>
       <item row="6" column="1">
@@ -571,6 +511,9 @@
         <property name="text">
          <string>Создание заказа</string>
         </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
        </widget>
       </item>
       <item row="0" column="1">
@@ -617,31 +560,63 @@
      </layout>
     </widget>
    </widget>
+   <widget class="QGroupBox" name="groupBox_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>0</y>
+      <width>471</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="title">
+     <string>Поиск по клиенту</string>
+    </property>
+    <widget class="QLineEdit" name="searchLineEdit">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>451</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+    </widget>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1055</width>
+     <width>912</width>
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu">
+   <widget class="QMenu" name="clientsMenu">
     <property name="title">
      <string>Клиенты</string>
     </property>
-    <addaction name="action_addClient"/>
     <addaction name="action_getClientsList"/>
    </widget>
-   <widget class="QMenu" name="menu_2">
+   <widget class="QMenu" name="staffsMenu">
     <property name="title">
      <string>Сотрудники</string>
     </property>
     <addaction name="action_getStaffList"/>
    </widget>
-   <addaction name="menu"/>
-   <addaction name="menu_2"/>
+   <addaction name="clientsMenu"/>
+   <addaction name="staffsMenu"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -702,38 +677,6 @@
     <hint type="destinationlabel">
      <x>81</x>
      <y>782</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>editOrderBtn</sender>
-   <signal>clicked()</signal>
-   <receiver>MainFormClass</receiver>
-   <slot>editOrderSlot()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>173</x>
-     <y>774</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>174</x>
-     <y>772</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>deleteOrderBtn</sender>
-   <signal>clicked()</signal>
-   <receiver>MainFormClass</receiver>
-   <slot>removeOrderSlot()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>259</x>
-     <y>766</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>284</x>
-     <y>768</y>
     </hint>
    </hints>
   </connection>
