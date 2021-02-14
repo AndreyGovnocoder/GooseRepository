@@ -69,15 +69,15 @@ std::vector<Client> DataBase::getClientsList()
     //получаем список клиентов из БД
     int rowCount = 0;
     QSqlQuery query(getDatabase());
-    query.exec("SELECT COUNT(*) FROM " + TABLE_CLIENTS);
-    query.first();
-    rowCount = query.value(0).toInt();
-
-    std::vector<Client> clientsList;
-    clientsList.reserve(rowCount);
 
     query.exec("SELECT * FROM " + TABLE_CLIENTS);
-    
+    query.last();
+    rowCount = query.at();
+    std::vector<Client> clientsList;
+    if (rowCount != 0)
+        clientsList.reserve(++rowCount);
+    query.first();
+
     while (query.next())
     {
         Client client(
@@ -152,15 +152,17 @@ std::vector<Staff> DataBase::getStaffList()
 {
     //получаем список сотрудников из БД
     int rowCount = 0;
-    QSqlQuery query(getDatabase());
-    query.exec("SELECT COUNT(*) FROM " + TABLE_STAFFS);
-    query.first();
-    rowCount = query.value(0).toInt();
-
-    std::vector<Staff> staffList;
-    staffList.reserve(rowCount);
+    QSqlQuery query(getDatabase());    
 
     query.exec("SELECT * FROM " + TABLE_STAFFS);
+    query.last();
+    rowCount = query.at();
+
+    std::vector<Staff> staffList;
+    if (rowCount != 0)
+        staffList.reserve(++rowCount);
+
+    query.first();
     while (query.next())
     {
         Staff staff(
@@ -228,14 +230,16 @@ std::vector<Order> DataBase::getOrdersList()
     //получаем список заказов
     int rowCount = 0;
     QSqlQuery query(getDatabase());
-    query.exec("SELECT COUNT(*) FROM " + TABLE_ORDERS);
-    query.first();
-    rowCount = query.value(0).toInt();
-
-    std::vector<Order> ordersList;
-    ordersList.reserve(rowCount);
 
     query.exec("SELECT * FROM " + TABLE_ORDERS);
+    query.last();
+    rowCount = query.at();
+
+    std::vector<Order> ordersList;
+    if (rowCount != 0)
+        ordersList.reserve(++rowCount);
+
+    query.first();
     while (query.next())
     {
         Order order;
@@ -264,7 +268,7 @@ std::vector<Order> DataBase::getOrdersList()
 bool DataBase::addOrder(const Order& order)
 {
     //добавляем заказ в БД
-    bool successful = false;
+    
     QSqlQuery query(getDatabase());
     query.prepare("INSERT INTO " + TABLE_ORDERS +
         " (date, client, amount, payment, manager, designer, availability, remark, loginCreate, loginEdit, loginAvailability, dateTimeCreate, dateTimeEdit, dateTimeAvailability)"
@@ -285,25 +289,19 @@ bool DataBase::addOrder(const Order& order)
     query.bindValue(":dateTimeAvailability", order.getDateTimeAvailability());
 
     if (query.exec())
-        successful = true;
-    else
-        return false;
-
-    if (successful)
     {
         int orderId = DataBase::getLastId(TABLE_ORDERS);
         for (size_t i = 0; i < order.getPositionsList().size(); ++i)
-            DataBase::addPosition(DataBase::getLastId(TABLE_ORDERS), order.getPositionsList()[i]);
-        return true;        
-    }
-    else
+            DataBase::addPosition(orderId, order.getPositionsList()[i]);
+        return true;
+    } else
         return false;
 }
 
 bool DataBase::editOrder(const Order* editOrder)
 {
     //редактируем заказ
-    bool successful = false;
+    
     QSqlQuery query(getDatabase());
     query.prepare("UPDATE " + TABLE_ORDERS +
         " SET date=?, client=?, amount=?, payment=?, manager=?, designer=?, availability=?, remark=?, loginCreate=?, loginEdit=?, loginAvailability=?, dateTimeCreate=?, dateTimeEdit=?, dateTimeAvailability=?"
@@ -324,16 +322,10 @@ bool DataBase::editOrder(const Order* editOrder)
     query.addBindValue(editOrder->getDateTimeAvailability());
 
     if (query.exec())
-        successful = true;
-    else
-        return false;
-
-    if (successful)
     {
         DataBase::removePositionByIdOrder(editOrder->getId());
-
-        size_t i = 0;
-        for (; i < editOrder->getPositionsList().size(); ++i)
+        
+        for (size_t i = 0; i < editOrder->getPositionsList().size(); ++i)
             DataBase::addPosition(editOrder->getId(), editOrder->getPositionsList()[i]);
         return true;
     }
@@ -344,7 +336,7 @@ bool DataBase::editOrder(const Order* editOrder)
 bool DataBase::editOrder(const Order& editOrder)
 {
     //редактируем заказ
-    bool successful = false;
+
     QSqlQuery query(getDatabase());
     query.prepare("UPDATE " + TABLE_ORDERS +
         " SET date=?, client=?, amount=?, payment=?, manager=?, designer=?, availability=?, remark=?, loginCreate=?, loginEdit=?, loginAvailability=?, dateTimeCreate=?, dateTimeEdit=?, dateTimeAvailability=?"
@@ -365,18 +357,13 @@ bool DataBase::editOrder(const Order& editOrder)
     query.addBindValue(editOrder.getDateTimeAvailability());
 
     if (query.exec())
-        successful = true;
-    else
+    {
+        DataBase::removePositionByIdOrder(editOrder.getId());
+        for (size_t i = 0; i < editOrder.getPositionsList().size(); ++i)
+            DataBase::addPosition(editOrder.getId(), editOrder.getPositionsList()[i]);
+        return true;
+    } else
         return false;
-
-    if (!successful) return false;
-
-    DataBase::removePositionByIdOrder(editOrder.getId());
-
-    for (size_t i = 0; i < editOrder.getPositionsList().size(); ++i)
-        DataBase::addPosition(editOrder.getId(), editOrder.getPositionsList()[i]);
-
-    return true;
 }
 
 bool DataBase::removeOrder(int orderId)
@@ -399,14 +386,16 @@ std::vector<OrderPosition> DataBase::getOrderPositionsList(int orderId)
     //получаем список позиций по id заказа
     int rowCount = 0;
     QSqlQuery query(getDatabase());
-    query.exec("SELECT COUNT(*) FROM " + TABLE_POSITIONS);
-    query.first();
-    rowCount = query.value(0).toInt();
+
+    query.exec("SELECT * FROM " + TABLE_POSITIONS + " WHERE idOrder=" + QString::number(orderId)); 
+    query.last();
+    rowCount = query.at();
 
     std::vector<OrderPosition> positionsList;
-    positionsList.reserve(rowCount);
+    if (rowCount != 0)
+        positionsList.reserve(++rowCount);
 
-    query.exec("SELECT * FROM " + TABLE_POSITIONS + " WHERE idOrder=" + QString::number(orderId));
+    query.first();
     while (query.next())
     {
         OrderPosition position;
@@ -428,14 +417,15 @@ std::vector<OrderPosition> DataBase::getAllPositions()
     int rowCount = 0;
 
     QSqlQuery query(getDatabase());
-    query.exec("SELECT COUNT(*) FROM " + TABLE_POSITIONS);
-    query.first();
-    rowCount = query.value(0).toInt();
+    query.exec("SELECT * FROM " + TABLE_POSITIONS);
+    query.last();
+    rowCount = query.at();
 
     std::vector<OrderPosition> positionsList;
-    positionsList.reserve(rowCount);
+    if (rowCount != 0)
+        positionsList.reserve(rowCount);
 
-    query.exec("SELECT * FROM " + TABLE_POSITIONS);
+    query.first();
     while (query.next())
     {
         OrderPosition position;
@@ -493,14 +483,16 @@ std::vector<StaffAccount> DataBase::getAccountsList()
 {
     int rowCount = 0;
     QSqlQuery query(getDatabase());
-    query.exec("SELECT COUNT(*) FROM " + TABLE_ACCOUNTS);
-    query.first();
-    rowCount = query.value(0).toInt();
-
-    std::vector<StaffAccount> accountsList;
-    accountsList.reserve(rowCount);
 
     query.exec("SELECT * FROM " + TABLE_ACCOUNTS);
+    query.last();
+    rowCount = query.at();
+
+    std::vector<StaffAccount> accountsList;
+    if (rowCount != 0)
+        accountsList.reserve(rowCount);
+
+    query.first();
     while (query.next())
     {
         StaffAccount account;

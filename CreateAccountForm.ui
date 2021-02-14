@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CreateAccountForm</class>
+ <widget class="QWidget" name="CreateAccountForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>321</width>
+    <height>342</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>CreateLoginForm</string>
+  </property>
+  <widget class="QWidget" name="horizontalLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>290</y>
+     <width>301</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QPushButton" name="createAccountBtn">
+      <property name="text">
+       <string>Создать</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <widget class="QPushButton" name="cancelBtn">
+      <property name="text">
+       <string>Отмена</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QGroupBox" name="groupBox">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>301</width>
+     <height>121</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="title">
+    <string/>
+   </property>
+   <widget class="QWidget" name="gridLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>281</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="loginLabel">
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Логин</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="passwordLabel">
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Пароль</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="passwordLineEdit">
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="loginLineEdit">
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>150</y>
+     <width>301</width>
+     <height>121</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="title">
+    <string/>
+   </property>
+   <widget class="QWidget" name="gridLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>281</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="nameLineEdit">
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="nameLabel">
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Имя</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="positionLabel">
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Должность</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="positionLineEdit">
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>cancelBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>CreateAccountForm</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>280</x>
+     <y>305</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>198</x>
+     <y>288</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>createAccountBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>CreateAccountForm</receiver>
+   <slot>addAccountToDBSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>77</x>
+     <y>307</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>125</x>
+     <y>285</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>addAccountToDBSlot()</slot>
+ </slots>
+</ui>

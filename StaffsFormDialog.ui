@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>StaffsFormDialog</class>
+ <widget class="QDialog" name="StaffsFormDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>289</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>StaffsFormDialog</string>
+  </property>
+  <widget class="QWidget" name="gridLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>0</y>
+     <width>381</width>
+     <height>201</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="verticalSpacing">
+     <number>10</number>
+    </property>
+    <item row="1" column="1">
+     <widget class="QListWidget" name="designersListWidget"/>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="managersLabel">
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Менеджеры</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLabel" name="designersLabel">
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Дизайнеры</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QPushButton" name="addManagerBtn">
+      <property name="minimumSize">
+       <size>
+        <width>90</width>
+        <height>23</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Добавить</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QPushButton" name="addDesignerBtn">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>23</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Добавить</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QListWidget" name="managersListWidget"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="horizontalLayoutWidget_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>210</y>
+     <width>381</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item>
+     <widget class="QPushButton" name="editBtn">
+      <property name="minimumSize">
+       <size>
+        <width>90</width>
+        <height>23</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Редактировать</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <spacer name="horizontalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <widget class="QPushButton" name="deleteBtn">
+      <property name="minimumSize">
+       <size>
+        <width>90</width>
+        <height>23</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Удалить</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="horizontalLayoutWidget_3">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>250</y>
+     <width>91</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <item>
+     <widget class="QPushButton" name="okBtn">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>23</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Ок</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>editBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>StaffsFormDialog</receiver>
+   <slot>editStaffSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>66</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>93</x>
+     <y>327</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>deleteBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>StaffsFormDialog</receiver>
+   <slot>removeStaffSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>327</x>
+     <y>265</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>192</x>
+     <y>327</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>okBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>StaffsFormDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>320</x>
+     <y>342</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>267</x>
+     <y>354</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>addManagerBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>StaffsFormDialog</receiver>
+   <slot>addManagerSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>130</x>
+     <y>194</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>165</x>
+     <y>220</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>addDesignerBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>StaffsFormDialog</receiver>
+   <slot>addDesignerSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>265</x>
+     <y>192</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>198</x>
+     <y>238</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>managersListWidget</sender>
+   <signal>itemClicked(QListWidgetItem*)</signal>
+   <receiver>StaffsFormDialog</receiver>
+   <slot>clickOnManagerSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>118</x>
+     <y>95</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>31</x>
+     <y>208</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>designersListWidget</sender>
+   <signal>itemClicked(QListWidgetItem*)</signal>
+   <receiver>StaffsFormDialog</receiver>
+   <slot>clickOnDesignerSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>287</x>
+     <y>118</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>353</x>
+     <y>206</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>clickOnDesignerSlot()</slot>
+  <slot>clickOnManagerSlot()</slot>
+  <slot>removeStaffSlot()</slot>
+  <slot>editStaffSlot()</slot>
+  <slot>addDesignerSlot()</slot>
+  <slot>addManagerSlot()</slot>
+ </slots>
+</ui>

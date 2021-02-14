@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ClientsFormDialog</class>
+ <widget class="QDialog" name="ClientsFormDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>892</width>
+    <height>501</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>ClientsFormDialog</string>
+  </property>
+  <widget class="QTableWidget" name="clientsTableWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>871</width>
+     <height>451</height>
+    </rect>
+   </property>
+   <property name="acceptDrops">
+    <bool>false</bool>
+   </property>
+   <property name="editTriggers">
+    <set>QAbstractItemView::DoubleClicked</set>
+   </property>
+   <property name="alternatingRowColors">
+    <bool>true</bool>
+   </property>
+   <property name="selectionMode">
+    <enum>QAbstractItemView::SingleSelection</enum>
+   </property>
+   <property name="selectionBehavior">
+    <enum>QAbstractItemView::SelectRows</enum>
+   </property>
+   <property name="verticalScrollMode">
+    <enum>QAbstractItemView::ScrollPerPixel</enum>
+   </property>
+   <property name="horizontalScrollMode">
+    <enum>QAbstractItemView::ScrollPerPixel</enum>
+   </property>
+   <property name="sortingEnabled">
+    <bool>true</bool>
+   </property>
+   <attribute name="horizontalHeaderStretchLastSection">
+    <bool>true</bool>
+   </attribute>
+   <column>
+    <property name="text">
+     <string>id</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>Клиент</string>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>Телефон</string>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>E-mail</string>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+   </column>
+  </widget>
+  <widget class="QPushButton" name="editBtn">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>470</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Редактировать</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="deleteBtn">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>470</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Удалить</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="okBtn">
+   <property name="geometry">
+    <rect>
+     <x>790</x>
+     <y>470</y>
+     <width>91</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Ок</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="addBtn">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>470</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Добавить</string>
+   </property>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>addBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>ClientsFormDialog</receiver>
+   <slot>addClientSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>66</x>
+     <y>256</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>94</x>
+     <y>279</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>ClientsFormDialog</receiver>
+   <slot>editClientSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>171</x>
+     <y>248</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>197</x>
+     <y>281</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>deleteBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>ClientsFormDialog</receiver>
+   <slot>removeClientSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>310</x>
+     <y>251</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>295</x>
+     <y>279</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>okBtn</sender>
+   <signal>clicked()</signal>
+   <receiver>ClientsFormDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>637</x>
+     <y>258</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>561</x>
+     <y>259</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>addClientSlot()</slot>
+  <slot>editClientSlot()</slot>
+  <slot>removeClientSlot()</slot>
+ </slots>
+</ui>
